@@ -50,6 +50,14 @@ def demo_page():
     raise HTTPException(404, "demo_page.html not found")
 
 
+@app.get("/showcase", response_class=HTMLResponse)
+def showcase_page():
+    html = os.path.join(HERE, "showcase.html")
+    if os.path.exists(html):
+        return FileResponse(html, media_type="text/html")
+    raise HTTPException(404, "showcase.html not found")
+
+
 def _context():
     f = state["finding"]
     measure = None

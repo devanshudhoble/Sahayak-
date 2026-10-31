@@ -1,20 +1,49 @@
-# 🛒 Sahayak — Merchant Growth AI
+# Sahayak — AI Copilot for Paytm Soundbox Merchants
 
-> **Paytm AI Innovation Challenge 2026 · Track 1 · Finale Entry**
+> **Paytm AI Innovation Challenge 2026 · Track 1: Merchant Growth AI · Finale Entry**
 
-Sahayak is an AI copilot for India's 10M+ small shop owners using Paytm Soundbox. It watches payment trends, explains what the data shows in plain language, suggests one small capped experiment, waits for the owner's approval, and measures the result — all through voice in Hindi and English.
+Sahayak is an AI-powered business advisor that lives inside the Paytm Business app. It turns raw Soundbox transaction data into actionable, voice-first insights for India's 10M+ small merchants — in Hindi, English, or Hinglish.
 
-**No dashboards. No jargon. Just a soundbox that talks.**
+**No dashboards. No jargon. Just a soundbox that talks back.**
 
 ---
 
-## 🎯 Problem
+## Product Showcase
 
-Small merchants collect ₹500–₹5,000/day digitally. They see totals on a screen — but never spot a slow Thursday, a peak hour, or a trend that's costing them money. Existing analytics tools are built for large businesses with analysts on staff.
+![Sahayak 3-Screen Showcase](screenshots/showcase_full.png)
 
-## 💡 Solution
+*Three screens side-by-side: Business Dashboard · AI Chat with Voice · Insights & Credit Score*
 
-Sahayak turns the Paytm Soundbox into a growth advisor:
+---
+
+## App Screenshots
+
+<table>
+<tr>
+<td width="25%" align="center"><img src="screenshots/demo_home.png" alt="Home Dashboard" width="200"><br><b>Home Dashboard</b><br>Live sales stats, peak hours, credit score, festival alerts</td>
+<td width="25%" align="center"><img src="screenshots/demo_chat.png" alt="Sahayak AI Chat" width="200"><br><b>Sahayak AI Chat</b><br>Voice & text in Hinglish, festival cards, credit signal</td>
+<td width="25%" align="center"><img src="screenshots/demo_payments.png" alt="Payments" width="200"><br><b>Payments</b><br>Real-time Soundbox transactions — QR, UPI, all in one view</td>
+<td width="25%" align="center"><img src="screenshots/demo_account.png" alt="Account & Settings" width="200"><br><b>Account & Settings</b><br>Shop category, Sahayak controls, voice language</td>
+</tr>
+</table>
+
+---
+
+## Problem
+
+80% of Paytm's Soundbox merchants are small shop owners — a paan wala, a kirana store, a chai stall. They have:
+
+- **Zero analytics skills** — can't read charts or dashboards
+- **No time** — running the shop alone, 12+ hours a day
+- **Valuable data sitting unused** — every Soundbox beep is a transaction Paytm already has
+
+The data exists. The merchant just needs someone to **explain it in their language and tell them what to do**.
+
+---
+
+## Solution
+
+Sahayak is that someone. An AI layer on top of Paytm Soundbox:
 
 | Step | What happens | Owner involvement |
 |------|-------------|-------------------|
@@ -28,149 +57,203 @@ Sahayak turns the Paytm Soundbox into a growth advisor:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   SAHAYAK SYSTEM                     │
-├─────────────────────────────────────────────────────┤
-│                                                      │
-│  ┌──────────┐    ┌───────────┐    ┌──────────────┐  │
-│  │ Soundbox  │◄──►│  Sarvam   │◄──►│   Sahayak    │  │
-│  │ (Voice)   │    │  AI API   │    │   Engine     │  │
-│  │           │    │           │    │              │  │
-│  │ Owner     │    │ STT: Hindi│    │ trend.py     │  │
-│  │ speaks /  │    │ & English │    │ explainer.py │  │
-│  │ listens   │    │           │    │ planner.py   │  │
-│  │           │    │ TTS: Reply│    │ answers.py   │  │
-│  └──────────┘    └───────────┘    └──────┬───────┘  │
-│                                          │          │
-│                                   ┌──────▼───────┐  │
-│                                   │  Paytm Data  │  │
-│                                   │  (SQLite DB) │  │
-│                                   │              │  │
-│                                   │ Transactions │  │
-│                                   │ by weekday,  │  │
-│                                   │ hour, amount │  │
-│                                   └──────────────┘  │
-└─────────────────────────────────────────────────────┘
+Merchant speaks (Hindi/English)
+        │
+        ▼
+  Sarvam AI STT (saaras:v4)
+        │
+        ▼
+  FastAPI Server ──► SQLite (transaction data)
+        │                    │
+        │              trend.py ──► Weekday trend detection
+        │           explainer.py ──► Plain-language insight  
+        │            planner.py ──► Experiment engine + measurement
+        │          festivals.py ──► 15 Indian festivals + YoY comparison
+        │       credit_score.py ──► 5-component credit signal
+        │     merchant_types.py ──► 6 shop categories
+        │
+        ▼
+  Groq API (Llama 3.1 70B) ──► Contextual Hinglish answer
+        │
+        ▼
+  Sarvam AI TTS (bulbul:v4-flash)
+        │
+        ▼
+  Merchant hears the answer
 ```
 
-## 🔄 Agent Workflow
+---
 
-```
-    ┌─────────────────┐
-    │  Transaction DB  │
-    │  (daily ingest)  │
-    └────────┬────────┘
-             ▼
-    ┌─────────────────┐
-    │   TREND DETECT   │  Compare last 3 weeks vs prior 3 weeks
-    │   (trend.py)     │  Flag if weekday drops ≥ 10% & ≥ 2/3 weeks lower
-    └────────┬────────┘  Check "others stable" (≤ 8% change)
-             ▼
-    ┌─────────────────┐
-    │    EXPLAIN       │  Generate plain-language explanation
-    │  (explainer.py)  │  "Thursday sales down 15%..."
-    └────────┬────────┘  Include peak hours, comparison data
-             ▼
-    ┌─────────────────┐
-    │    PROPOSE       │  Suggest action with capped budget
-    │  (planner.py)    │  "Tea-and-snacks bundle, max ₹1,000"
-    └────────┬────────┘
-             ▼
-    ┌─────────────────┐
-    │  OWNER DECISION  │  ◄── Voice: "haan" / "nahi" / "change to 500"
-    │   (server.py)    │  Nothing executes without approval
-    └────────┬────────┘
-             ▼
-    ┌─────────────────┐
-    │    MEASURE       │  After test period:
-    │  (planner.py)    │  Compare test weeks vs baseline
-    └────────┬────────┘  Report: "sales up 12%" or "no change"
-             ▼
-    ┌─────────────────┐
-    │   VOICE Q&A      │  Owner can ask anytime:
-    │  (answers.py)    │  "Why are Thursday sales down?"
-    │  (sarvam.py)     │  "When is my busiest time?"
-    └─────────────────┘  "How did the test go?"
-```
+## Features
 
-## 📁 Project Structure
+| Feature | Description | Module |
+|---------|-------------|--------|
+| **Trend Detection** | Weekday-level sales comparison, flags drops >10% | `trend.py` |
+| **Plain-Language Explainer** | Converts stats into simple Hinglish insights | `explainer.py` |
+| **Smart Experiments** | Budget-capped A/B tests with auto-measurement | `planner.py` |
+| **Voice Input/Output** | Hindi + English STT/TTS via Sarvam AI | `sarvam.py` |
+| **LLM Chat** | Contextual Q&A powered by Groq (Llama 3.1 70B) | `groq_chat.py`, `answers.py` |
+| **Festival Intelligence** | 15 Indian festivals, YoY comparison, stock alerts | `festivals.py` |
+| **Merchant Credit Score** | 5-component weighted scoring (0-100) for lending | `credit_score.py` |
+| **Category-Aware Advice** | 6 shop types with day-specific suggestions | `merchant_types.py` |
+| **3-Screen Showcase** | Product-grade multi-phone demo for presentations | `showcase.html` |
+| **Interactive Prototype** | Full single-phone demo with all 4 tabs | `demo_page.html` |
 
-```
-sahayak/
-├── server.py          # FastAPI server — all API endpoints
-├── trend.py           # Weekday trend detector (statistical, no ML)
-├── explainer.py       # Natural-language explanation generator
-├── planner.py         # Action proposal → decision → measurement
-├── answers.py         # Keyword-routing Q&A engine
-├── sarvam.py          # Sarvam AI STT/TTS client
-├── data_gen.py        # Synthetic transaction data generator
-├── demo_page.html     # Single-file demo UI (SVG chart, voice, decisions)
-├── main.py            # CLI end-to-end demo
-├── start.bat          # One-click Windows launcher
-├── .env               # API key (not committed)
-└── .gitignore
-```
+---
 
-## 🛠️ Tech Stack
+## Multi-Merchant Intelligence
+
+Every merchant category gets **tailored suggestions** from the same engine:
+
+| Category | Sahayak detects | AI suggests |
+|----------|----------------|-------------|
+| **Kirana store** | Thursday sales down 15% | "Tea-and-snacks bundle on Thursdays" |
+| **Vegetable vendor** | Evening sales dropping | "Offer home delivery after 6 pm" |
+| **Salon / parlour** | Weekday appointments low | "Thursday haircut discount ₹50 off" |
+| **Chai stall** | Morning rush declining | "Add paratha combo for ₹30 before 10 am" |
+| **Medical store** | Sunday sales zero | "Partner with clinic for Sunday OPD referrals" |
+| **Stationery shop** | Post-exam season drop | "Push arts & crafts supplies on social media" |
+
+---
+
+## Credit Scoring for Paytm Lending
+
+Sahayak generates a **merchant credit signal** from transaction patterns:
+
+| Component | Weight | What it measures |
+|-----------|--------|-----------------|
+| Consistency | 30% | How regular are daily collections |
+| Growth | 25% | Revenue trend over time |
+| Frequency | 20% | How many transactions per day |
+| Digital Adoption | 15% | QR + UPI usage vs cash |
+| Tenure | 10% | How long on the platform |
+
+**Result:** Auto-qualification for Paytm Merchant Loan — no paperwork, no branch visit.
+
+---
+
+## Festival Intelligence
+
+Tracks **15 Indian festivals** and auto-triggers alerts:
+
+- Before Diwali: *"Last Diwali week you did 3x normal sales. Stock up 2 days early."*
+- Before Holi: *"Holi week colors and sweets drove 40% of revenue. Order extra."*
+- After festival: *"Post-Diwali dip is normal — competitors dropped 20% too."*
+
+---
+
+## Tech Stack
 
 | Layer | Technology | Why |
 |-------|-----------|-----|
-| **Backend** | Python 3, FastAPI | Lightweight, async-ready, auto-docs |
-| **Database** | SQLite | Zero-config, single-file, perfect for edge deployment |
-| **Voice AI** | Sarvam AI (STT: saaras:v4, TTS: bulbul:v4-flash) | Built for Indian languages, ₹0.49/min STT |
-| **Frontend** | Vanilla HTML/JS, inline SVG | No build step, works on any browser |
-| **Detection** | Statistical weekday comparison | Interpretable, no training data needed |
-| **Deployment** | Single folder, one-click start | Shop owner or Paytm field agent can set up |
+| **Backend** | Python 3, FastAPI | Lightweight, async, auto-docs |
+| **Database** | SQLite | Zero-config, single-file, edge-ready |
+| **LLM** | Groq (Llama 3.1 70B) | Free, fast inference |
+| **Voice** | Sarvam AI (STT: saaras:v4, TTS: bulbul:v4-flash) | Built for Indian languages |
+| **Frontend** | Vanilla HTML/CSS/JS | No build step, mobile-first |
+| **Voice Fallback** | Browser Web Speech API | Works when Sarvam key unavailable |
 
-## 🚀 Quick Start
+---
+
+## Quick Start
 
 ```bash
 # 1. Clone
 git clone https://github.com/devanshudhoble/Sahayak-.git
 cd Sahayak-
 
-# 2. Add your Sarvam AI key
-echo SARVAM_API_KEY=your_key_here > .env
+# 2. Install dependencies
+pip install fastapi uvicorn httpx groq python-dotenv
 
-# 3. Run
-start.bat          # Windows — installs deps automatically
-# OR
-pip install fastapi uvicorn requests python-multipart
-uvicorn server:app --host 127.0.0.1 --port 8000 --reload
+# 3. Add API keys
+echo "GROQ_API_KEY=your_key_here" > .env
+echo "SARVAM_API_KEY=your_key_here" >> .env
 
-# 4. Open demo
-# http://127.0.0.1:8000/demo
+# 4. Run
+python -m uvicorn server:app --reload
+
+# OR on Windows:
+start.bat
 ```
 
-## 📊 API Endpoints
+### URLs
+
+| URL | What |
+|-----|------|
+| `http://localhost:8000/demo` | Single-phone interactive prototype |
+| `http://localhost:8000/showcase` | 3-screen product showcase (for presentations) |
+| `http://localhost:8000/docs` | Auto-generated API docs |
+
+---
+
+## API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/demo` | GET | Interactive demo page |
-| `/api/status` | GET | Current trend finding & decision state |
+| `/demo` | GET | Interactive single-phone demo |
+| `/showcase` | GET | 3-screen product showcase |
+| `/api/status` | GET | Current trend, suggestion & decision state |
 | `/api/decision` | POST | Owner approves/changes/skips suggestion |
-| `/api/ask-text` | POST | Text question → text answer |
-| `/api/ask-voice` | POST | Audio upload → transcript + answer + spoken reply |
-| `/docs` | GET | Auto-generated Swagger UI |
+| `/api/ask-text` | POST | Text question → Hinglish answer |
+| `/api/ask-voice` | POST | Audio → transcript + answer + spoken reply |
+| `/api/categories` | GET | List all 6 merchant categories |
+| `/api/category` | POST | Change shop type (suggestions update) |
+| `/api/festival` | GET | Upcoming festival + YoY comparison |
+| `/api/credit-score` | GET | 5-component credit signal |
 
-## 🔑 Key Design Principles
+---
 
-1. **Owner is always in control** — Nothing executes without voice/click approval
-2. **Budget is always capped** — Maximum spend is set before any test begins
-3. **Explain before suggest** — Data first, then recommendation
-4. **Measure everything** — Every suggestion is tracked and reported back
-5. **Voice-first** — Designed for shop owners, not analysts
+## Project Structure
 
-## 🎤 Sarvam AI Integration
+```
+sahayak/
+├── server.py            # FastAPI server — all endpoints
+├── demo_page.html       # Single-phone interactive prototype
+├── showcase.html         # 3-screen product showcase
+├── trend.py             # Weekday trend detection
+├── explainer.py         # Plain-language insight generator
+├── planner.py           # Experiment engine with budget caps
+├── answers.py           # LLM-powered contextual Q&A
+├── groq_chat.py         # Groq API integration
+├── sarvam.py            # Sarvam AI voice (STT + TTS)
+├── festivals.py         # 15 Indian festivals + YoY
+├── credit_score.py      # 5-component merchant credit signal
+├── merchant_types.py    # 6 shop categories with suggestions
+├── data_gen.py          # Synthetic transaction data generator
+├── screenshots/         # UI screenshots
+├── .env                 # API keys (not committed)
+└── start.bat            # Windows one-click launcher
+```
 
-- **Speech-to-Text:** `saaras:v4` — Supports Hindi, English, and code-mixed input
-- **Text-to-Speech:** `bulbul:v4-flash` with `simran_en_customer` speaker
-- **Fallback:** Browser Web Speech API when Sarvam key is not configured
-- **Cost:** ₹0.49/min STT + ₹1/1000 chars TTS (₹100 free credit included)
+---
+
+## Why This Matters for Paytm
+
+| Metric | Impact |
+|--------|--------|
+| **Merchant Retention** | Merchants who grow stay on the platform |
+| **Transaction Revenue** | More transactions = more MDR |
+| **Lending Business** | Credit scores unlock merchant lending |
+| **Zero CAC** | Soundbox already deployed — Sahayak is software |
+| **Moat** | Transaction data + AI = advice no competitor can replicate |
+
+---
+
+## Vision — From Speaker to Conversation
+
+Today, Paytm Soundbox is a speaker. It only talks **TO** the merchant — "Payment received: two hundred rupees." The merchant never talks back.
+
+**We're turning it into a conversation.**
+
+The same hardware that says "payment received" can also say "your Thursday sales dropped 15% — want to try a bundle offer?" And the same microphone can hear "haan, chalao" and start a test.
+
+**Only Paytm has both the transaction data AND the voice device already sitting on 10 million counters.** Sahayak turns that moat into a growth engine.
 
 ---
 
 **Built for the Paytm AI Innovation Challenge 2026 Finale**
+
+*Prototype uses synthetic transaction data. No real merchant data was used.*

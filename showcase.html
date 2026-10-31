@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sahayak · Paytm Business AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paytm-blue: #00BAF2;
+  --paytm-dark: #002970;
+  --paytm-navy: #00194d;
+  --bg: #f4f6f9;
+  --white: #ffffff;
+  --fg: #0f172a;
+  --fg2: #475569;
+  --muted: #94a3b8;
+  --border: #e2e8f0;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow-x:hidden;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:linear-gradient(160deg,#0a0e27 0%,#0f1a3e 30%,#001f5c 60%,#002970 100%);
+  min-height:100vh;
+}
+
+/* ====== TOP HERO ====== */
+.hero{
+  text-align:center;padding:40px 20px 10px;color:white;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,186,242,0.12);border:1px solid rgba(0,186,242,0.25);
+  border-radius:40px;padding:6px 18px 6px 8px;margin-bottom:16px;
+  font-size:12px;font-weight:700;color:var(--paytm-blue);letter-spacing:0.02em;
+}
+.hero-badge .pulse-ring{
+  width:8px;height:8px;border-radius:50%;background:var(--paytm-blue);
+  box-shadow:0 0 0 0 rgba(0,186,242,0.4);animation:hero-pulse 2s infinite;
+}
+@keyframes hero-pulse{
+  0%{box-shadow:0 0 0 0 rgba(0,186,242,0.4);}
+  70%{box-shadow:0 0 0 8px rgba(0,186,242,0);}
+  100%{box-shadow:0 0 0 0 rgba(0,186,242,0);}
+}
+.hero h1{
+  font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-1.5px;
+  line-height:1.1;margin-bottom:12px;
+  background:linear-gradient(135deg,#ffffff 0%,#b8e4ff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{
+  font-size:clamp(14px,2vw,18px);color:rgba(255,255,255,0.55);
+  max-width:520px;margin:0 auto;font-weight:500;line-height:1.5;
+}
+.paytm-wordmark{
+  display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:0.04em;
+}
+.paytm-wordmark img{height:18px;opacity:0.5;}
+
+/* ====== PHONES CONTAINER ====== */
+.phones{
+  display:flex;justify-content:center;align-items:flex-start;
+  gap:clamp(12px,2vw,32px);padding:20px clamp(8px,2vw,40px) 40px;
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* ====== PHONE FRAME ====== */
+.phone{
+  width:320px;min-width:290px;flex-shrink:0;
+  border-radius:36px;overflow:hidden;
+  background:var(--white);
+  box-shadow:0 30px 100px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  scroll-snap-align:center;
+  display:flex;flex-direction:column;
+  height:620px;position:relative;
+  transition:transform 0.3s;
+}
+.phone:hover{transform:translateY(-4px);}
+.phone.center{
+  width:340px;min-width:310px;height:650px;
+  box-shadow:0 30px 100px rgba(0,186,242,0.2),0 0 0 1px rgba(0,186,242,0.15),
+    0 40px 120px rgba(0,0,0,0.5);
+}
+.phone-label{
+  position:absolute;bottom:-32px;left:0;right:0;text-align:center;
+  font-size:11px;font-weight:700;color:rgba(255,255,255,0.3);
+  letter-spacing:0.1em;text-transform:uppercase;
+}
+
+/* Status bar */
+.sbar{
+  background:var(--paytm-dark);color:white;font-size:10px;font-weight:600;
+  padding:8px 20px;display:flex;justify-content:space-between;align-items:center;
+}
+
+/* Paytm header */
+.p-header{
+  background:linear-gradient(135deg,var(--paytm-dark) 0%,#003a8c 100%);
+  color:white;padding:12px 16px 10px;
+}
+.p-header-row{display:flex;align-items:center;justify-content:space-between;}
+.p-header .logo{font-size:15px;font-weight:800;letter-spacing:-0.3px;}
+.p-header .sahayak-badge{
+  font-size:8px;font-weight:800;background:rgba(0,186,242,0.3);
+  padding:3px 10px;border-radius:10px;letter-spacing:0.04em;text-transform:uppercase;
+  margin-left:8px;
+}
+.p-header .icons{display:flex;gap:10px;font-size:16px;opacity:0.7;}
+
+/* Section header inside phone */
+.sec-head{
+  font-size:14px;font-weight:800;color:var(--fg);
+  padding:14px 16px 8px;background:var(--bg);
+}
+
+/* ====== SCREEN 1: BUSINESS HOME ====== */
+.biz-home{flex:1;overflow-y:auto;background:var(--bg);}
+.biz-soundbox{
+  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(90deg,#ecfdf5,#f0fdfa);
+  padding:8px 16px;font-size:11px;color:#065f46;font-weight:600;
+  border-bottom:1px solid #d1fae5;
+}
+.biz-soundbox .dot{
+  width:6px;height:6px;border-radius:50%;background:var(--success);
+  box-shadow:0 0 6px rgba(34,197,94,0.4);
+}
+.biz-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;}
+.biz-stat{
+  background:var(--white);border-radius:14px;padding:14px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.biz-stat .label{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
+.biz-stat .val{font-size:20px;font-weight:800;color:var(--fg);margin-top:4px;}
+.biz-stat .sub{font-size:10px;color:var(--muted);margin-top:2px;font-weight:500;}
+.biz-stat.primary{
+  background:linear-gradient(135deg,var(--paytm-dark),#0369a1);color:white;
+  box-shadow:0 4px 16px rgba(0,41,112,0.2);
+}
+.biz-stat.primary .label{color:rgba(255,255,255,0.55);}
+.biz-stat.primary .val{color:white;}
+.biz-stat.primary .sub{color:rgba(255,255,255,0.5);}
+
+.sahayak-entry{
+  margin:8px 14px;background:linear-gradient(135deg,#002970 0%,#0284c7 100%);
+  border-radius:16px;padding:16px;color:white;cursor:pointer;
+  transition:transform 0.2s;position:relative;overflow:hidden;
+}
+.sahayak-entry:hover{transform:scale(1.01);}
+.sahayak-entry::after{
+  content:'';position:absolute;right:-20px;top:-20px;
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(0,186,242,0.15);
+}
+.sahayak-entry .se-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;}
+.sahayak-entry .se-title{font-size:16px;font-weight:800;margin-bottom:4px;}
+.sahayak-entry .se-sub{font-size:11px;opacity:0.7;line-height:1.4;max-width:200px;}
+.sahayak-entry .se-icon{
+  width:44px;height:44px;border-radius:14px;
+  background:rgba(255,255,255,0.12);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+}
+.sahayak-entry .se-row{
+  display:flex;gap:6px;margin-top:12px;position:relative;z-index:1;
+}
+.sahayak-entry .se-chip{
+  font-size:9px;font-weight:700;padding:4px 10px;border-radius:12px;
+  background:rgba(255,255,255,0.12);backdrop-filter:blur(4px);
+  letter-spacing:0.02em;
+}
+
+.biz-card{
+  margin:0 14px 8px;background:var(--white);border-radius:14px;padding:14px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.biz-card h4{font-size:12px;font-weight:800;color:var(--fg);margin-bottom:8px;}
+.bar-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px;}
+.bar-label{width:44px;text-align:right;color:var(--muted);font-weight:700;font-size:10px;}
+.bar-track{flex:1;height:16px;background:var(--bg);border-radius:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--paytm-blue),#0284c7);}
+.bar-val{width:50px;font-weight:800;font-size:10px;color:var(--fg);}
+
+.festival-mini{
+  margin:0 14px 8px;background:linear-gradient(135deg,#fffbeb,#fef3c7);
+  border-radius:14px;padding:14px;border-left:3px solid var(--warn);
+}
+.festival-mini h4{font-size:12px;font-weight:800;color:#92400e;margin-bottom:4px;}
+.festival-mini p{font-size:11px;color:#78350f;line-height:1.4;}
+
+/* Bottom nav */
+.bnav{
+  display:flex;background:var(--white);border-top:1px solid var(--border);
+  padding:6px 0 10px;
+}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;
+  font-size:9px;font-weight:700;color:var(--muted);
+  border:none;background:none;cursor:pointer;padding:4px 0;
+}
+.bnav-item.active{color:var(--paytm-blue);}
+.bnav-item .ni{font-size:18px;}
+
+/* ====== SCREEN 2: SAHAYAK CHAT ====== */
+.chat-screen{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.chat-title-bar{
+  background:linear-gradient(135deg,var(--paytm-dark),#003a8c);
+  color:white;padding:10px 16px;display:flex;align-items:center;gap:10px;
+}
+.chat-title-bar .ct-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--paytm-blue),#0284c7);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  box-shadow:0 2px 8px rgba(0,186,242,0.3);
+}
+.chat-title-bar .ct-info h3{font-size:14px;font-weight:800;}
+.chat-title-bar .ct-info p{font-size:10px;opacity:0.6;font-weight:500;}
+.chat-title-bar .ct-right{margin-left:auto;display:flex;gap:14px;font-size:16px;opacity:0.6;}
+
+.chat-area{
+  flex:1;overflow-y:auto;padding:10px 12px 6px;
+  display:flex;flex-direction:column;gap:6px;
+  background:var(--bg);scroll-behavior:smooth;
+}
+.bubble{
+  max-width:84%;padding:10px 14px;border-radius:16px;
+  font-size:13px;line-height:1.5;animation:fadeIn 0.3s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.bubble.ai{
+  background:var(--white);color:var(--fg);align-self:flex-start;
+  border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+.bubble.user{
+  background:linear-gradient(135deg,var(--paytm-blue),#0284c7);
+  color:white;align-self:flex-end;border-bottom-right-radius:4px;
+}
+.bubble .blbl{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;
+  margin-bottom:3px;color:var(--paytm-blue);
+}
+
+.action-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.action-btn{
+  font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;
+  border:2px solid var(--paytm-blue);border-radius:20px;padding:6px 16px;
+  background:var(--paytm-blue);color:white;transition:all 0.2s;
+}
+.action-btn:hover{background:var(--paytm-dark);border-color:var(--paytm-dark);}
+.action-btn.ghost{background:transparent;color:var(--paytm-blue);}
+.action-btn.ghost:hover{background:var(--paytm-blue);color:white;}
+.action-btn:disabled{opacity:0.3;cursor:default;}
+
+.chat-input{
+  background:var(--white);border-top:1px solid var(--border);
+  padding:8px 12px;display:flex;gap:6px;align-items:center;
+}
+.chat-input select{
+  font-family:inherit;font-size:10px;font-weight:700;
+  border:1.5px solid var(--border);border-radius:16px;
+  padding:7px 8px;background:var(--bg);color:var(--fg2);cursor:pointer;
+}
+.chat-input input{
+  flex:1;font-family:inherit;font-size:13px;
+  border:2px solid var(--border);border-radius:20px;
+  padding:8px 14px;background:var(--bg);color:var(--fg);
+}
+.chat-input input:focus{border-color:var(--paytm-blue);outline:none;background:white;}
+.chat-input input::placeholder{color:var(--muted);}
+.cbtn{
+  width:36px;height:36px;border-radius:50%;border:none;
+  background:var(--paytm-blue);color:white;font-size:14px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all 0.2s;
+}
+.cbtn:hover{background:var(--paytm-dark);transform:scale(1.05);}
+.cbtn.listening{background:var(--danger);animation:pulse 1s infinite;}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4);}
+  50%{box-shadow:0 0 0 6px rgba(239,68,68,0);}
+}
+.typing{display:flex;gap:3px;padding:6px 14px;}
+.typing span{
+  width:6px;height:6px;border-radius:50%;background:var(--muted);
+  opacity:0.3;animation:blink 1.4s infinite;
+}
+.typing span:nth-child(2){animation-delay:0.2s;}
+.typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes blink{0%,100%{opacity:0.3;}50%{opacity:0.8;}}
+
+/* Chips */
+.chips{display:flex;flex-wrap:wrap;gap:4px;max-width:90%;align-self:flex-start;animation:fadeIn 0.3s ease;}
+.chip{
+  font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--border);border-radius:16px;padding:5px 12px;
+  background:var(--white);color:var(--fg2);transition:all 0.2s;
+}
+.chip:hover{border-color:var(--paytm-blue);color:var(--paytm-blue);}
+
+/* Budget row */
+.budget-row{display:flex;gap:6px;align-items:center;margin-top:6px;}
+.budget-row input{
+  font-family:inherit;font-size:13px;font-weight:600;
+  border:2px solid var(--border);border-radius:10px;padding:6px 10px;
+  width:100px;background:var(--bg);color:var(--fg);
+}
+.budget-row input:focus{border-color:var(--paytm-blue);outline:none;}
+
+/* Measure card */
+.measure-card{
+  background:var(--white);border-radius:14px;padding:12px 14px;
+  max-width:84%;align-self:flex-start;
+  box-shadow:0 1px 3px rgba(0,0,0,0.05);animation:fadeIn 0.3s ease;
+  border-left:3px solid var(--success);
+}
+.measure-card h3{font-size:13px;color:var(--success);font-weight:800;margin-bottom:6px;}
+.measure-row{display:flex;justify-content:space-between;padding:3px 0;font-size:12px;color:var(--fg2);}
+.measure-row .val{font-weight:800;color:var(--fg);}
+
+/* ====== SCREEN 3: INSIGHTS ====== */
+.insights-screen{flex:1;overflow-y:auto;background:var(--bg);padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+
+.credit-card-vis{
+  background:linear-gradient(135deg,#002970 0%,#0369a1 100%);
+  border-radius:16px;padding:16px;color:white;
+  box-shadow:0 4px 20px rgba(0,41,112,0.3);
+}
+.credit-card-vis h3{font-size:13px;font-weight:800;opacity:0.9;margin-bottom:8px;}
+.credit-big{font-size:36px;font-weight:900;text-align:center;margin:6px 0;}
+.credit-bar{height:5px;border-radius:3px;background:rgba(255,255,255,0.15);margin:8px 0;}
+.credit-bar-fill{height:100%;border-radius:3px;}
+.credit-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;opacity:0.85;}
+.credit-comp{margin-top:8px;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;}
+
+.insight-card{
+  background:var(--white);border-radius:14px;padding:14px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.insight-card h4{font-size:12px;font-weight:800;color:var(--fg);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.insight-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--fg2);}
+.insight-row .v{font-weight:800;color:var(--fg);}
+
+.festival-card-vis{
+  background:linear-gradient(135deg,#fffbeb,#fef3c7);
+  border-radius:14px;padding:14px;border-left:3px solid var(--warn);
+}
+.festival-card-vis h4{font-size:12px;font-weight:800;color:#92400e;margin-bottom:6px;}
+.festival-card-vis p{font-size:11px;color:#78350f;line-height:1.4;}
+
+.voice-demo-card{
+  background:linear-gradient(135deg,#f0f9ff,#e0f2fe);
+  border-radius:14px;padding:16px;text-align:center;
+  border:1px solid #bae6fd;
+}
+.voice-demo-card h4{font-size:12px;font-weight:800;color:#0369a1;margin-bottom:6px;}
+.voice-demo-card p{font-size:11px;color:#0284c7;line-height:1.4;margin-bottom:10px;}
+.voice-btn{
+  width:56px;height:56px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,var(--paytm-blue),#0284c7);
+  color:white;font-size:24px;cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,186,242,0.3);
+  transition:all 0.2s;margin:0 auto;display:flex;align-items:center;justify-content:center;
+}
+.voice-btn:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(0,186,242,0.4);}
+.voice-btn.listening{
+  background:linear-gradient(135deg,var(--danger),#dc2626);
+  box-shadow:0 0 0 0 rgba(239,68,68,0.4);animation:pulse 1s infinite;
+}
+.voice-wave{
+  display:flex;align-items:center;justify-content:center;gap:3px;
+  height:30px;margin-top:8px;
+}
+.voice-wave .vbar{
+  width:3px;border-radius:2px;background:var(--paytm-blue);opacity:0.3;
+  animation:vwave 1.2s ease-in-out infinite;
+}
+.voice-wave .vbar:nth-child(1){height:8px;animation-delay:0s;}
+.voice-wave .vbar:nth-child(2){height:16px;animation-delay:0.1s;}
+.voice-wave .vbar:nth-child(3){height:24px;animation-delay:0.2s;}
+.voice-wave .vbar:nth-child(4){height:16px;animation-delay:0.3s;}
+.voice-wave .vbar:nth-child(5){height:8px;animation-delay:0.4s;}
+@keyframes vwave{
+  0%,100%{transform:scaleY(0.4);opacity:0.3;}
+  50%{transform:scaleY(1);opacity:0.8;}
+}
+
+.cat-btn-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.cat-btn{
+  font-family:inherit;font-size:9px;font-weight:700;cursor:pointer;
+  border:1.5px solid var(--border);border-radius:14px;padding:4px 10px;
+  background:var(--white);color:var(--fg2);transition:all 0.2s;
+}
+.cat-btn.active{background:var(--paytm-blue);color:white;border-color:var(--paytm-blue);}
+
+/* Footer */
+.showcase-footer{
+  text-align:center;padding:30px 20px 40px;color:rgba(255,255,255,0.2);
+  font-size:11px;font-weight:600;
+}
+
+/* Responsive */
+@media(max-width:1000px){
+  .phones{gap:16px;padding:16px 12px 40px;}
+  .phone{width:280px;min-width:260px;height:560px;}
+  .phone.center{width:300px;min-width:280px;height:590px;}
+}
+@media(max-width:700px){
+  .phones{gap:12px;padding:12px 8px 40px;}
+  .phone{width:260px;min-width:250px;height:540px;}
+  .phone.center{width:280px;min-width:260px;height:560px;}
+}
+
+[hidden]{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge"><span class="pulse-ring"></span> Paytm AI Innovation Challenge · Track 1</div>
+  <h1>Sahayak</h1>
+  <p>AI copilot for 10M+ Paytm Soundbox merchants. Voice-first. Hindi-first. Zero learning curve.</p>
+  <div class="paytm-wordmark">Built for Paytm Business</div>
+</div>
+
+<!-- THREE PHONES -->
+<div class="phones">
+
+  <!-- ====== PHONE 1: BUSINESS HOME ====== -->
+  <div class="phone" id="phone1">
+    <div class="sbar"><span id="clock1">12:30</span><span>●●● 🔋</span></div>
+    <div class="p-header">
+      <div class="p-header-row">
+        <div style="display:flex;align-items:center;"><span class="logo">Paytm Business</span></div>
+        <div class="icons">🔔 ⚙️</div>
+      </div>
+    </div>
+    <div class="biz-soundbox"><span class="dot"></span> Soundbox connected · Sahayak active</div>
+    <div class="biz-home" style="flex:1;overflow-y:auto;">
+      <div class="biz-stats">
+        <div class="biz-stat primary">
+          <div class="label">Today's Sales</div>
+          <div class="val" id="h-today">—</div>
+          <div class="sub" id="h-txns">Loading...</div>
+        </div>
+        <div class="biz-stat">
+          <div class="label">This Week</div>
+          <div class="val" id="h-week">—</div>
+          <div class="sub" id="h-change"></div>
+        </div>
+        <div class="biz-stat">
+          <div class="label">Avg. Daily</div>
+          <div class="val" id="h-avg">—</div>
+          <div class="sub">Last 7 days</div>
+        </div>
+        <div class="biz-stat">
+          <div class="label">Credit Score</div>
+          <div class="val" id="h-credit">—</div>
+          <div class="sub" id="h-risk"></div>
+        </div>
+      </div>
+
+      <div class="sahayak-entry" onclick="highlightCenter()">
+        <div class="se-top">
+          <div>
+            <div class="se-title">Sahayak AI</div>
+            <div class="se-sub">Aapke business ka AI advisor — voice mein baat karo, data se seekho</div>
+          </div>
+          <div class="se-icon">🤖</div>
+        </div>
+        <div class="se-row">
+          <span class="se-chip">🎤 Voice</span>
+          <span class="se-chip">📊 Insights</span>
+          <span class="se-chip">🧪 Experiments</span>
+          <span class="se-chip">📅 Festivals</span>
+        </div>
+      </div>
+
+      <div class="biz-card">
+        <h4>Peak Business Hours</h4>
+        <div id="h-bars"></div>
+      </div>
+
+      <div class="festival-mini" id="h-fest" style="display:none;">
+        <h4 id="h-fest-title"></h4>
+        <p id="h-fest-text"></p>
+      </div>
+    </div>
+    <div class="bnav">
+      <button class="bnav-item active"><span class="ni">🏠</span>Home</button>
+      <button class="bnav-item"><span class="ni">💳</span>Payments</button>
+      <button class="bnav-item" style="color:var(--paytm-blue);"><span class="ni">🤖</span>Sahayak</button>
+      <button class="bnav-item"><span class="ni">👤</span>Account</button>
+    </div>
+    <div class="phone-label">Business Dashboard</div>
+  </div>
+
+  <!-- ====== PHONE 2: SAHAYAK CHAT (CENTER, INTERACTIVE) ====== -->
+  <div class="phone center" id="phone2">
+    <div class="sbar"><span id="clock2">12:30</span><span>●●● 🔋</span></div>
+    <div class="chat-title-bar">
+      <div class="ct-avatar">🤖</div>
+      <div class="ct-info"><h3>Sahayak</h3><p>AI Business Advisor · Online</p></div>
+      <div class="ct-right">📞 ⋮</div>
+    </div>
+    <div class="chat-screen">
+      <div class="chat-area" id="chat"></div>
+    </div>
+    <div class="chat-input">
+      <select id="lang"><option value="en-IN">EN</option><option value="hi-IN">HI</option></select>
+      <input id="q" type="text" placeholder="Ask Sahayak anything..." aria-label="Your question">
+      <button class="cbtn" id="mic" title="Voice">🎤</button>
+      <button class="cbtn" id="send" title="Send">➤</button>
+    </div>
+    <div class="phone-label">AI Chat · Voice & Text</div>
+  </div>
+
+  <!-- ====== PHONE 3: INSIGHTS & VOICE ====== -->
+  <div class="phone" id="phone3">
+    <div class="sbar"><span id="clock3">12:30</span><span>●●● 🔋</span></div>
+    <div class="p-header">
+      <div class="p-header-row">
+        <div style="display:flex;align-items:center;"><span class="logo">Sahayak</span><span class="sahayak-badge">Insights</span></div>
+        <div class="icons">📊</div>
+      </div>
+    </div>
+    <div class="insights-screen" id="insights">
+      <div class="voice-demo-card">
+        <h4>🎤 Voice Assistant</h4>
+        <p>Tap to ask Sahayak in Hindi or English — it speaks back!</p>
+        <button class="voice-btn" id="voice-big" title="Speak">🎤</button>
+        <div class="voice-wave" id="vwave" style="display:none;">
+          <div class="vbar"></div><div class="vbar"></div><div class="vbar"></div><div class="vbar"></div><div class="vbar"></div>
+        </div>
+        <p id="voice-transcript" style="font-size:11px;color:var(--fg2);margin-top:6px;min-height:16px;font-weight:600;"></p>
+      </div>
+
+      <div class="credit-card-vis" id="credit-vis"></div>
+
+      <div class="festival-card-vis" id="fest-vis" style="display:none;"></div>
+
+      <div class="insight-card">
+        <h4>📊 Weekly Pattern</h4>
+        <div id="insight-pattern"></div>
+      </div>
+
+      <div class="insight-card">
+        <h4>🏪 Shop Category</h4>
+        <div class="cat-btn-row" id="cat-btns"></div>
+        <p style="font-size:11px;color:var(--fg2);margin-top:8px;line-height:1.4;" id="cat-suggestion"></p>
+      </div>
+    </div>
+    <div class="phone-label">Insights & Voice</div>
+  </div>
+
+</div>
+
+<div class="showcase-footer">
+  Prototype · Synthetic Data · Paytm AI Innovation Challenge Track 1
+</div>
+
+<script>
+const API = "";
+const inr = new Intl.NumberFormat("en-IN");
+const chat = document.getElementById("chat");
+let S = {};
+
+// Clock
+function updateClock(){
+  const now = new Date();
+  const t = now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0");
+  document.getElementById("clock1").textContent=t;
+  document.getElementById("clock2").textContent=t;
+  document.getElementById("clock3").textContent=t;
+}
+updateClock(); setInterval(updateClock,30000);
+
+function highlightCenter(){
+  const el = document.getElementById("phone2");
+  el.style.boxShadow = "0 0 40px rgba(0,186,242,0.5),0 30px 100px rgba(0,186,242,0.3)";
+  setTimeout(()=>{el.style.boxShadow="";},1200);
+}
+
+function hourLabel(h){return (h%12||12)+(h>=12?" pm":" am");}
+
+// ====== CHAT HELPERS ======
+function addBubble(text,type,label){
+  const div=document.createElement("div");
+  if(type==="ai"){
+    div.className="bubble ai";
+    div.innerHTML=(label?`<div class="blbl">${label}</div>`:"")+text;
+  }else if(type==="user"){
+    div.className="bubble user";div.textContent=text;
+  }else if(type==="measure"){
+    div.className="measure-card";div.innerHTML=text;
+  }
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;return div;
+}
+function addChips(chips){
+  const div=document.createElement("div");div.className="chips";
+  chips.forEach(c=>{
+    const btn=document.createElement("button");btn.className="chip";btn.textContent=c;
+    btn.onclick=()=>{div.remove();askQuestion(c);};
+    div.appendChild(btn);
+  });
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+}
+function showTyping(){
+  const div=document.createElement("div");div.className="bubble ai";div.id="typing";
+  div.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+}
+function hideTyping(){const el=document.getElementById("typing");if(el)el.remove();}
+
+// ====== INIT ======
+async function init(){
+  try{
+    const res=await fetch(API+"/api/status");S=await res.json();
+  }catch(e){
+    addBubble("Server not connected. Run <strong>start.bat</strong> first.","ai","Sahayak");
+    return;
+  }
+  loadPhone1();loadPhone3();startChat();
+}
+
+// ====== PHONE 1: HOME ======
+async function loadPhone1(){
+  try{
+    const [cr,fe]=await Promise.all([
+      fetch(API+"/api/credit-score").then(r=>r.json()),
+      fetch(API+"/api/festival").then(r=>r.json())
+    ]);
+    const total=S.peak_hours?S.peak_hours.reduce((s,h)=>s+h[1],0):0;
+    const txns=S.peak_hours?S.peak_hours.length*15:0;
+    document.getElementById("h-today").textContent="₹"+inr.format(total);
+    document.getElementById("h-txns").textContent=txns+" transactions";
+    document.getElementById("h-week").textContent="₹"+inr.format(Math.round(total*6.5));
+    document.getElementById("h-change").textContent=S.drop_pct?"↓ "+S.drop_pct+"% "+S.weak_weekday+"s":"Stable";
+    document.getElementById("h-avg").textContent="₹"+inr.format(Math.round(total*0.95));
+    if(cr.status==="ok"){
+      document.getElementById("h-credit").textContent=cr.credit_score+"/100";
+      document.getElementById("h-risk").textContent=cr.risk_level+" Risk";
+    }
+    const barsDiv=document.getElementById("h-bars");barsDiv.innerHTML="";
+    if(S.peak_hours){
+      const mx=Math.max(...S.peak_hours.map(h=>h[1]));
+      S.peak_hours.slice(0,4).forEach(h=>{
+        const pct=Math.round(h[1]/mx*100);
+        barsDiv.innerHTML+=`<div class="bar-row"><span class="bar-label">${hourLabel(h[0])}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span class="bar-val">₹${inr.format(h[1])}</span></div>`;
+      });
+    }
+    if(fe.upcoming){
+      document.getElementById("h-fest").style.display="block";
+      document.getElementById("h-fest-title").textContent="🎉 "+fe.upcoming.name+" — "+fe.upcoming.days_until+" days";
+      document.getElementById("h-fest-text").textContent=fe.comparison?fe.comparison.advice:"Get ready for festive season!";
+    }
+  }catch(e){}
+}
+
+// ====== PHONE 3: INSIGHTS ======
+async function loadPhone3(){
+  try{
+    const [cr,fe,cats]=await Promise.all([
+      fetch(API+"/api/credit-score").then(r=>r.json()),
+      fetch(API+"/api/festival").then(r=>r.json()),
+      fetch(API+"/api/categories").then(r=>r.json())
+    ]);
+    // Credit card
+    if(cr.status==="ok"){
+      const pct=Math.round(cr.credit_score);
+      const barColor=pct>=75?"#22c55e":pct>=50?"#f59e0b":"#ef4444";
+      let h=`<h3>Merchant Credit Signal</h3>`;
+      h+=`<div class="credit-big">${pct}<span style="font-size:14px;opacity:0.5"> / ${cr.max_score}</span></div>`;
+      h+=`<div class="credit-bar"><div class="credit-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>`;
+      h+=`<div class="credit-row"><span>Risk Level</span><span style="font-weight:800">${cr.risk_level}</span></div>`;
+      h+=`<div class="credit-row"><span>Avg Weekly Revenue</span><span>₹${inr.format(cr.avg_weekly_revenue)}</span></div>`;
+      if(cr.suggested_loan_limit>0)h+=`<div class="credit-row"><span>Loan Limit</span><span style="font-weight:800">₹${inr.format(cr.suggested_loan_limit)}</span></div>`;
+      h+=`<div class="credit-comp">`;
+      const labels={consistency:"Consistency",growth:"Growth",frequency:"Frequency",adoption:"Adoption",tenure:"Tenure"};
+      for(const[key,comp]of Object.entries(cr.components)){
+        h+=`<div class="credit-row"><span>${labels[key]||key} (${Math.round(comp.weight*100)}%)</span><span>${comp.score}/100</span></div>`;
+      }
+      h+=`</div>`;
+      document.getElementById("credit-vis").innerHTML=h;
+    }
+    // Festival
+    if(fe.upcoming){
+      const f=fe.upcoming,comp=fe.comparison;
+      let h=`<h4>🎉 ${f.name} — ${f.days_until} days away</h4>`;
+      h+=`<p>Date: ${f.date}</p>`;
+      if(comp){
+        h+=`<p>Last year: ₹${inr.format(comp.last_year_estimated_total)} (${comp.multiplier}x normal)</p>`;
+        h+=`<p style="font-weight:700;margin-top:4px;">${comp.advice}</p>`;
+      }
+      document.getElementById("fest-vis").style.display="block";
+      document.getElementById("fest-vis").innerHTML=h;
+    }
+    // Pattern
+    const patDiv=document.getElementById("insight-pattern");
+    patDiv.innerHTML=`<div class="insight-row"><span>Weak day</span><span class="v">${S.weak_weekday||'Thursday'}</span></div>`+
+      `<div class="insight-row"><span>Drop</span><span class="v" style="color:var(--danger)">↓ ${S.drop_pct||15}%</span></div>`+
+      `<div class="insight-row"><span>Best hour</span><span class="v">${S.peak_hours?hourLabel(S.peak_hours[0][0]):'—'}</span></div>`+
+      `<div class="insight-row"><span>Suggestion</span><span class="v" style="font-size:10px;max-width:140px;text-align:right;">${(S.suggestion||'').slice(0,50)}...</span></div>`;
+    // Categories
+    const catDiv=document.getElementById("cat-btns");catDiv.innerHTML="";
+    cats.categories.forEach(c=>{
+      catDiv.innerHTML+=`<button class="cat-btn${c.id===cats.current?' active':''}" onclick="selectCat(this,'${c.id}')">${c.label}</button>`;
+    });
+    document.getElementById("cat-suggestion").textContent=S.suggestion||"";
+  }catch(e){}
+}
+
+window.selectCat=async function(btn,catId){
+  document.querySelectorAll("#cat-btns .cat-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  try{
+    await fetch(API+"/api/category",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({category:catId})});
+    const st=await(await fetch(API+"/api/status")).json();
+    S=st;
+    document.getElementById("cat-suggestion").textContent=st.suggestion;
+  }catch(e){}
+};
+
+// ====== PHONE 2: CHAT ======
+function startChat(){
+  const day=S.weak_weekday||"Thursday";
+  const pct=S.drop_pct||15;
+  setTimeout(()=>{
+    addBubble("Namaste Sunita ji! 🙏 Main aapka Sahayak hoon.","ai","Sahayak");
+    setTimeout(()=>{
+      addBubble(`Aapki <strong>${day}</strong> ki sales mein <strong>${pct}%</strong> ki giravat hai pichhle 3 hafton mein.`,"ai","Sahayak");
+      setTimeout(()=>{
+        addBubble(S.explanation,"ai","Sahayak");
+        setTimeout(()=>showSuggestion(),600);
+      },600);
+    },600);
+  },400);
+}
+
+function showSuggestion(){
+  addBubble(
+    `<strong>${S.suggestion}</strong><br><br>Bina aapki ijazat ke kuch nahi hoga.`+
+    `<div class="action-row">`+
+    `<button class="action-btn" onclick="decide('approve')">Haan, chalao</button>`+
+    `<button class="action-btn ghost" onclick="showBudget()">Budget badlo</button>`+
+    `<button class="action-btn ghost" onclick="decide('skip')">Abhi nahi</button>`+
+    `</div>`+
+    `<div class="budget-row" id="budget-row" hidden>`+
+    `<input type="number" id="cap-input" min="100" max="${S.max_cap||1500}" step="100" value="${S.cap}">`+
+    `<button class="action-btn" onclick="applyBudget()">Set</button>`+
+    `</div>`,"ai","Sahayak"
+  );
+  setTimeout(()=>{
+    addChips([
+      `${S.weak_weekday||'Thursday'} sales kyun kam?`,
+      "Sabse busy time?",
+      "Kya try karun?",
+      "Aaj kitna hua?"
+    ]);
+  },300);
+}
+
+window.showBudget=function(){document.getElementById("budget-row").hidden=false;};
+window.applyBudget=function(){
+  const v=Number(document.getElementById("cap-input").value);
+  if(!v||v<100||v>(S.max_cap||1500))return;
+  S.cap=v;decide("change");
+};
+
+window.decide=async function(d){
+  document.querySelectorAll(".action-btn").forEach(b=>b.disabled=true);
+  const br=document.getElementById("budget-row");if(br)br.remove();
+  if(d==="skip"){
+    addBubble("Abhi nahi.","user");
+    fetch(API+"/api/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision:"skip"})}).catch(()=>{});
+    setTimeout(()=>addBubble("Koi baat nahi! Jab zaroorat ho, pooch lena.","ai","Sahayak"),400);
+  }else{
+    const cap=d==="change"?S.cap:(S.cap||1000);
+    addBubble(d==="change"?`₹${inr.format(cap)} budget se chalao`:"Haan, chalao!","user");
+    try{
+      const res=await fetch(API+"/api/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision:d==="change"?"change":"approve",cap:d==="change"?cap:null})});
+      const data=await res.json();S.decision=data.decision;S.cap=data.cap;
+    }catch(e){}
+    setTimeout(()=>{
+      addBubble("Done! Test shuru ho gaya. 3 hafton mein result bataunga.","ai","Sahayak");
+      setTimeout(()=>fetchMeasure(),800);
+    },400);
+  }
+};
+
+async function fetchMeasure(){
+  try{
+    const res=await fetch(API+"/api/status");const data=await res.json();
+    if(data.measure){
+      const m=data.measure;const sign=m.change_pct>=0?"+":"";
+      addBubble(
+        `<h3>Test Result</h3>`+
+        `<div class="measure-row"><span>${S.weak_weekday||'Thursday'} avg (test)</span><span class="val">₹${inr.format(m.test_avg)}</span></div>`+
+        `<div class="measure-row"><span>Before</span><span class="val">₹${inr.format(m.baseline_avg)}</span></div>`+
+        `<div class="measure-row"><span>Change</span><span class="val" style="color:${m.change_pct>=0?'var(--success)':'var(--danger)'}">${sign}${m.change_pct}%</span></div>`,"measure"
+      );
+    }
+  }catch(e){}
+}
+
+// ====== Q&A ======
+async function askQuestion(text){
+  if(!text.trim())return;
+  addBubble(text,"user");document.getElementById("q").value="";
+  showTyping();
+  try{
+    const res=await fetch(API+"/api/ask-text",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:text})});
+    const data=await res.json();hideTyping();
+    addBubble(data.answer,"ai","Sahayak");
+    speakText(data.answer);
+  }catch(e){hideTyping();addBubble("Connection error.","ai","Sahayak");}
+}
+
+function speakText(text){
+  try{if(!("speechSynthesis" in window))return;speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.lang=document.getElementById("lang").value;
+  speechSynthesis.speak(u);}catch(e){}
+}
+
+// ====== VOICE (Chat mic) ======
+(function setupVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const mic=document.getElementById("mic");
+  if(!SR){mic.title="Voice needs Chrome/Edge";return;}
+  const rec=new SR();rec.continuous=false;rec.interimResults=false;
+  rec.onresult=(e)=>{askQuestion(e.results[0][0].transcript);};
+  rec.onerror=rec.onend=()=>{mic.className="cbtn";mic.textContent="🎤";};
+  mic.onclick=()=>{
+    rec.lang=document.getElementById("lang").value;
+    mic.className="cbtn listening";mic.textContent="⏺";
+    try{rec.start();}catch(e){}
+  };
+})();
+
+// ====== VOICE (Big button on Phone 3) ======
+(function setupBigVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const btn=document.getElementById("voice-big");
+  const wave=document.getElementById("vwave");
+  const transcript=document.getElementById("voice-transcript");
+  if(!SR){btn.title="Voice needs Chrome/Edge";return;}
+  const rec=new SR();rec.continuous=false;rec.interimResults=false;
+  rec.onresult=(e)=>{
+    const text=e.results[0][0].transcript;
+    transcript.textContent='"'+text+'"';
+    askQuestion(text);
+  };
+  rec.onerror=rec.onend=()=>{
+    btn.className="voice-btn";btn.textContent="🎤";
+    wave.style.display="none";
+  };
+  btn.onclick=()=>{
+    rec.lang=document.getElementById("lang").value;
+    btn.className="voice-btn listening";btn.textContent="⏺";
+    wave.style.display="flex";transcript.textContent="Listening...";
+    try{rec.start();}catch(e){}
+  };
+})();
+
+document.getElementById("send").onclick=()=>askQuestion(document.getElementById("q").value);
+document.getElementById("q").onkeydown=(e)=>{if(e.key==="Enter")askQuestion(document.getElementById("q").value);};
+init();
+</script>
+</body>
+</html>
