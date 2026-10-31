@@ -1,0 +1,389 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Sahayak Shop Copilot</title>
+<style>
+/* Layout: one column on phones; the shop alert, the test decision and the voice panel stack, and the chart spans the full width. */
+:root {
+  --bg: #f6f7f4;
+  --surface: #ffffff;
+  --fg: #1b2430;
+  --muted: #5b6676;
+  --line: #d9dfd6;
+  --accent: #0e6b5c;
+  --accent-ink: #ffffff;
+  --warn: #8a5300;
+  --warn-bg: #fff1d6;
+  --bar-hist: #b9c4bb;
+  --bar-test: #0e6b5c;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111a17;
+    --surface: #18241f;
+    --fg: #e8efe9;
+    --muted: #9fb0a6;
+    --line: #2b3b34;
+    --accent: #5fd0b8;
+    --accent-ink: #0b1512;
+    --warn: #f0c27a;
+    --warn-bg: #3a2c12;
+    --bar-hist: #3d5149;
+    --bar-test: #5fd0b8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111a17;
+  --surface: #18241f;
+  --fg: #e8efe9;
+  --muted: #9fb0a6;
+  --line: #2b3b34;
+  --accent: #5fd0b8;
+  --accent-ink: #0b1512;
+  --warn: #f0c27a;
+  --warn-bg: #3a2c12;
+  --bar-hist: #3d5149;
+  --bar-test: #5fd0b8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+.wrap { max-width: 880px; margin: 0 auto; display: grid; gap: 16px; min-width: 0; }
+h1, h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: 28px; line-height: 1.2; }
+h2 { font-size: 18px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  min-width: 0;
+}
+.grid2 { display: grid; gap: 16px; grid-template-columns: 1fr; min-width: 0; }
+@media (min-width: 720px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+.pill {
+  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  background: var(--warn-bg); color: var(--warn);
+}
+.pill.ok { background: var(--accent); color: var(--accent-ink); }
+.explain { font-size: 16px; margin: 10px 0 0; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+button, .btn {
+  font: inherit; font-weight: 600; cursor: pointer;
+  border-radius: 10px; padding: 10px 16px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--accent-ink);
+}
+button.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+button:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+input, select {
+  font: inherit; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0;
+}
+input[type="number"] { width: 130px; }
+input.text { flex: 1 1 200px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chart { width: 100%; height: auto; display: block; margin-top: 10px; }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 12px 0 0; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+.answer {
+  margin-top: 12px; padding: 12px 14px; border-radius: 10px;
+  background: var(--bg); border: 1px solid var(--line); min-height: 52px;
+}
+.caution { font-size: 13px; color: var(--warn); margin: 10px 0 0; }
+.error { color: var(--warn); font-size: 13px; margin: 6px 0 0; min-height: 1em; }
+.footer { font-size: 12px; color: var(--muted); }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Sahayak demo · one shop · synthetic data</div>
+    <h1>Sunita's kirana, Thursday sales</h1>
+    <p class="muted" style="margin:6px 0 0">Sahayak notices a change, explains what the data shows, suggests one small test, and waits for your approval. All figures are synthetic.</p>
+  </header>
+
+  <section class="card" aria-labelledby="h-notice">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="h-notice">1. Notice and explain</h2>
+      <span class="pill">Alert</span>
+    </div>
+    <p class="explain" id="explain"></p>
+    <p class="muted" style="margin:12px 0 0" id="peak"></p>
+    <svg class="chart" id="chart" role="img" aria-labelledby="chart-title"></svg>
+    <p class="footer" id="chart-title" style="margin:6px 0 0">Thursday collections, nine weeks. Grey: six weeks of history. Green: the test period (simulated).</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-decide">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="h-decide">2. Suggest and decide</h2>
+      <span class="pill" id="status">Waiting for you</span>
+    </div>
+    <p class="explain" id="suggestion"></p>
+    <div class="btns" id="decide-btns">
+      <button id="approve">Approve</button>
+      <button class="ghost" id="change">Change budget</button>
+      <button class="ghost" id="skip">Skip</button>
+    </div>
+    <div class="row" id="change-row" hidden style="margin-top:12px">
+      <label for="cap">Budget (₹, max 1,500)</label>
+      <input id="cap" type="number" min="100" max="1500" step="100" value="1000">
+      <button id="apply-cap">Apply</button>
+    </div>
+    <p class="error" id="cap-error" role="alert"></p>
+  </section>
+
+  <section class="card" id="measure-card" aria-labelledby="h-measure" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h2 id="h-measure">3. Measure</h2>
+      <span class="pill ok">Result</span>
+    </div>
+    <dl class="kv" id="measure-kv"></dl>
+    <p class="caution" id="measure-caution"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-ask">
+    <h2 id="h-ask">4. Ask Sahayak</h2>
+    <p class="muted" style="margin:6px 0 0">Ask by voice or type. Answers come from the same numbers above. Sahayak only answers the questions it can check against the data.</p>
+    <div class="row" style="margin-top:12px">
+      <select id="lang" aria-label="Speech language">
+        <option value="en-IN">English (India)</option>
+        <option value="hi-IN">Hindi</option>
+      </select>
+      <button id="mic">Ask by voice</button>
+      <span class="muted" id="voice-note" style="font-size:13px"></span>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <input class="text" id="q" type="text" placeholder="e.g. Why are Thursday sales down?" aria-label="Your question">
+      <button class="ghost" id="ask">Ask</button>
+    </div>
+    <div class="answer" id="answer" aria-live="polite">Try: "Why are Thursday sales down?", "When is my busiest time?", "What should I try?", "How did the test do?"</div>
+    <div class="row" style="margin-top:8px"><button class="ghost" id="speak" hidden>Read answer aloud</button></div>
+  </section>
+
+  <p class="footer">Prototype. Soundbox and WhatsApp are mocked. Not affiliated with or endorsed by Paytm. Sales only: profit and actual spend are not measured. The test result is simulated, so it shows how the flow works, not real evidence. Voice input works in Chrome and Edge; answers are in English.</p>
+</main>
+
+<script>
+const D = {
+  explanation: "Thursday collections are down 15% over the last three weeks, compared with the three weeks before. Other weekdays are within 8% of their usual level, so the drop is specific to Thursdays. The data shows the drop, not the cause. Did your Thursday opening hours, stock or staffing change?",
+  peak: [[20, 29834], [19, 27743]],
+  suggestionBase: "Try a tea-and-snacks bundle offer on Thursdays for three weeks.",
+  cap: 1000,
+  maxCap: 1500,
+  measure: { baseline: 8729, test: 10400, change: 19.1,
+             note: "Sales only. Profit and actual spend are not measured in this prototype." },
+  thursdays: [
+    ["2026-09-10", 10637], ["2026-09-17", 10420], ["2026-09-24", 9623],
+    ["2026-10-01", 8664], ["2026-10-08", 9046], ["2026-10-15", 8476],
+    ["2026-10-22", 9335], ["2026-10-29", 10603], ["2026-11-05", 11261]
+  ],
+  testStart: "2026-10-19"
+};
+
+const inr = new Intl.NumberFormat("en-IN");
+const state = { decision: null, cap: D.cap };
+const $ = (id) => document.getElementById(id);
+
+function hourLabel(h) {
+  const suffix = h >= 12 ? "pm" : "am";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return h12 + " " + suffix;
+}
+
+function suggestionText() {
+  return D.suggestionBase + " Maximum budget ₹" + inr.format(state.cap) + ".";
+}
+
+function resultText() {
+  const m = D.measure;
+  return "Thursdays averaged ₹" + inr.format(m.test) + " during the test, against ₹" +
+    inr.format(m.baseline) + " in the three weeks before (" + (m.change >= 0 ? "+" : "") + m.change + "%).";
+}
+
+function drawChart() {
+  const svg = $("chart");
+  const W = 600, H = 230, padL = 56, padB = 34, padT = 12;
+  const max = 12000;
+  const plotW = W - padL - 8, plotH = H - padB - padT;
+  const n = D.thursdays.length, slot = plotW / n, bw = slot * 0.6;
+  const NS = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  svg.textContent = "";
+  const el = (tag, attrs) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  };
+  [0, 4000, 8000, 12000].forEach((v) => {
+    const y = padT + plotH - (v / max) * plotH;
+    svg.appendChild(el("line", { x1: padL, x2: W - 8, y1: y, y2: y, stroke: "var(--line)", "stroke-width": 1 }));
+    const t = el("text", { x: padL - 8, y: y + 4, "text-anchor": "end", fill: "var(--muted)", "font-size": 11 });
+    t.textContent = "₹" + inr.format(v / 1000) + "k";
+    svg.appendChild(t);
+  });
+  D.thursdays.forEach(([date, amount], i) => {
+    const x = padL + i * slot + (slot - bw) / 2;
+    const h = (amount / max) * plotH;
+    const isTest = date >= D.testStart;
+    svg.appendChild(el("rect", {
+      x, y: padT + plotH - h, width: bw, height: h, rx: 4,
+      fill: isTest ? "var(--bar-test)" : "var(--bar-hist)"
+    }));
+    const d = new Date(date + "T00:00:00");
+    const t = el("text", { x: x + bw / 2, y: H - 12, "text-anchor": "middle", fill: "var(--muted)", "font-size": 11 });
+    t.textContent = d.getDate() + " " + d.toLocaleString("en-GB", { month: "short" });
+    svg.appendChild(t);
+  });
+}
+
+function setStatus(text, ok) {
+  const p = $("status");
+  p.textContent = text;
+  p.className = ok ? "pill ok" : "pill";
+}
+
+function setDecided(decision) {
+  state.decision = decision;
+  ["approve", "change", "skip"].forEach((id) => { $(id).disabled = true; });
+  $("change-row").hidden = true;
+  if (decision === "skipped") {
+    setStatus("Skipped", false);
+    $("suggestion").textContent = suggestionText() + " You skipped this. Nothing runs and nothing is measured.";
+    $("measure-card").hidden = true;
+  } else {
+    setStatus("Approved, test running", true);
+    $("suggestion").textContent = suggestionText() + " Approved by you.";
+    $("measure-card").hidden = false;
+    renderMeasure();
+  }
+}
+
+function renderMeasure() {
+  const m = D.measure;
+  const kv = $("measure-kv");
+  kv.textContent = "";
+  [["Thursday average during test", "₹" + inr.format(m.test)],
+   ["Thursday average before", "₹" + inr.format(m.baseline)],
+   ["Change", (m.change >= 0 ? "+" : "") + m.change + "%"],
+   ["Budget cap", "₹" + inr.format(state.cap)]].forEach(([k, v]) => {
+    const dt = document.createElement("dt"); dt.textContent = k;
+    const dd = document.createElement("dd"); dd.textContent = v;
+    kv.appendChild(dt); kv.appendChild(dd);
+  });
+  $("measure-caution").textContent = "Test figures are simulated in this demo. " + m.note;
+}
+
+function route(question) {
+  const s = question.toLowerCase();
+  if (/why|down|decreas|drop|kyun|kyu|gir|kam/.test(s)) return D.explanation;
+  if (/busy|peak|rush|busiest|when|kab|samay|hour/.test(s)) {
+    const [h1] = D.peak;
+    return "Your busiest hours in the last three weeks are " + hourLabel(D.peak[0][0]) +
+      " and " + hourLabel(D.peak[1][0]) + ", in that order.";
+  }
+  if (/result|measure|how did|worked|test/.test(s)) {
+    if (state.decision === "approved") return resultText() + " " + D.measure.note;
+    if (state.decision === "skipped") return "You skipped the test, so there is no result.";
+    return "No test has been approved yet, so there is no result.";
+  }
+  if (/try|suggest|should|idea|what.*do|kya/.test(s)) {
+    return suggestionText() + " Nothing runs until you approve it.";
+  }
+  return "I can't answer that from your data yet. Ask about why Thursday sales fell, your busiest time, a suggested test, or the test result.";
+}
+
+function answer(question) {
+  const text = route(question);
+  $("answer").textContent = text;
+  $("speak").hidden = false;
+  speak(text);
+}
+
+function speak(text) {
+  try {
+    if (!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = $("lang").value === "hi-IN" ? "hi-IN" : "en-IN";
+    speechSynthesis.speak(u);
+  } catch (e) { /* speech is optional; the text answer is always shown */ }
+}
+
+function setupVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    $("mic").disabled = true;
+    $("voice-note").textContent = "Voice input needs Chrome or Edge. Type your question instead.";
+    return;
+  }
+  const rec = new SR();
+  rec.continuous = false;
+  rec.interimResults = false;
+  rec.onresult = (e) => {
+    const said = e.results[0][0].transcript;
+    $("q").value = said;
+    answer(said);
+  };
+  rec.onerror = (e) => {
+    $("voice-note").textContent = e.error === "not-allowed"
+      ? "Microphone permission was blocked. You can type your question."
+      : "Could not hear that. Try again or type your question.";
+  };
+  rec.onend = () => { $("mic").textContent = "Ask by voice"; };
+  $("mic").addEventListener("click", () => {
+    rec.lang = $("lang").value;
+    $("voice-note").textContent = "Listening…";
+    $("mic").textContent = "Listening…";
+    try { rec.start(); } catch (e) { $("voice-note").textContent = "Already listening."; }
+  });
+}
+
+function init() {
+  $("explain").textContent = D.explanation;
+  $("peak").textContent = "Busiest hours in the last three weeks: " +
+    hourLabel(D.peak[0][0]) + " and " + hourLabel(D.peak[1][0]) + ".";
+  $("suggestion").textContent = suggestionText();
+  drawChart();
+
+  $("approve").addEventListener("click", () => setDecided("approved"));
+  $("skip").addEventListener("click", () => setDecided("skipped"));
+  $("change").addEventListener("click", () => {
+    $("change-row").hidden = !$("change-row").hidden;
+    $("cap").focus();
+  });
+  $("apply-cap").addEventListener("click", () => {
+    const v = Number($("cap").value);
+    if (!Number.isFinite(v) || v < 100) { $("cap-error").textContent = "Enter at least ₹100."; return; }
+    if (v > D.maxCap) { $("cap-error").textContent = "The maximum is ₹1,500 by rule."; return; }
+    $("cap-error").textContent = "";
+    state.cap = v;
+    setDecided("approved");
+  });
+
+  $("ask").addEventListener("click", () => {
+    const q = $("q").value.trim();
+    if (q) answer(q);
+  });
+  $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") $("ask").click(); });
+  $("speak").addEventListener("click", () => speak($("answer").textContent));
+  setupVoice();
+}
+
+init();
+</script>
