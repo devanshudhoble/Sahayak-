@@ -328,42 +328,6 @@ body {
   50% { opacity: 1; }
 }
 
-/* Category selector */
-.cat-selector {
-  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
-}
-.cat-btn {
-  font: inherit; font-size: 11px; font-weight: 600;
-  cursor: pointer; border: 1.5px solid var(--paytm-blue);
-  border-radius: 14px; padding: 5px 10px;
-  background: var(--white); color: var(--paytm-blue); transition: all 0.2s;
-}
-.cat-btn:hover, .cat-btn.active { background: var(--paytm-blue); color: white; }
-
-/* Festival card */
-.festival-card {
-  background: linear-gradient(135deg, #fff7ed, #fef3c7);
-  border-radius: 14px; padding: 12px 14px;
-  max-width: 82%; align-self: flex-start;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-  animation: fadeIn 0.3s ease;
-  border-left: 3px solid #f59e0b;
-}
-.festival-card h3 { font-size: 13px; color: #b45309; font-weight: 700; margin-bottom: 4px; }
-
-/* Credit card */
-.credit-card {
-  background: linear-gradient(135deg, #002970, #00BAF2);
-  border-radius: 14px; padding: 14px;
-  max-width: 82%; align-self: flex-start;
-  color: white; animation: fadeIn 0.3s ease;
-}
-.credit-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; opacity: 0.9; }
-.credit-score-big { font-size: 36px; font-weight: 800; text-align: center; margin: 8px 0; }
-.credit-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); margin: 8px 0; }
-.credit-bar-fill { height: 100%; border-radius: 3px; background: #10b981; }
-.credit-row { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; opacity: 0.9; }
-
 .footer-note {
   text-align: center; font-size: 9px;
   color: var(--muted); padding: 4px; background: var(--bg);
@@ -552,8 +516,6 @@ function showSuggestion() {
       "Kya try karun?",
       "Aaj kitna kamaya?"
     ]);
-    // Phase 2: load category selector, festival alert, credit score
-    setTimeout(() => loadPhase2(), 600);
   }, 500);
 }
 
@@ -612,91 +574,6 @@ async function fetchMeasure() {
       addBubble("Test period complete hone par result bataunga.","ai","Sahayak");
     }
   } catch(e){ addBubble("Result baad mein check karna.","ai","Sahayak"); }
-}
-
-// ---- Phase 2: Category, Festival, Credit ----
-async function loadPhase2() {
-  // 1. Category selector
-  try {
-    const res = await fetch(API + "/api/categories");
-    const data = await res.json();
-    const cats = data.categories;
-    const cur = data.current;
-    let html = `🏪 Aapki dukaan ka type: <strong>${S.category_label||'Kirana Store'}</strong><br><small>Tap to change — suggestions will update for your shop type:</small>` +
-      `<div class="cat-selector">`;
-    cats.forEach(c => {
-      html += `<button class="cat-btn${c.id===cur?' active':''}" data-cat="${c.id}">${c.label}</button>`;
-    });
-    html += `</div><div class="source-tag">🏪 merchant_types.py → 6 shop categories</div>`;
-    const bub = addBubble(html, "ai", "Multi-Merchant Intelligence");
-    bub.querySelectorAll(".cat-btn").forEach(btn => {
-      btn.onclick = async () => {
-        const catId = btn.dataset.cat;
-        bub.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        try {
-          await fetch(API+"/api/category",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({category:catId})});
-          const st = await (await fetch(API+"/api/status")).json();
-          S = st;
-          addBubble(`✅ Category changed to <strong>${st.category_label}</strong>.<br>New suggestion: <strong>${st.suggestion}</strong>`, "ai", "Sahayak");
-        } catch(e){ addBubble("Category update failed.","ai","Sahayak"); }
-      };
-    });
-  } catch(e){}
-
-  // 2. Festival alert
-  try {
-    const res = await fetch(API + "/api/festival");
-    const data = await res.json();
-    if (data.upcoming) {
-      const f = data.upcoming;
-      const comp = data.comparison;
-      let html = `<div class="festival-card"><h3>🎉 ${f.name} — ${f.days_until} din baaki!</h3>`;
-      html += `<p style="font-size:12px;margin:4px 0;">Date: ${f.date}</p>`;
-      if (comp) {
-        html += `<p style="font-size:12px;margin:4px 0;">Last year estimated: ₹${inr.format(comp.last_year_estimated_total)} (${comp.multiplier}x normal)</p>`;
-        html += `<p style="font-size:12px;margin:4px 0;">This year so far: ₹${inr.format(comp.this_year_so_far)}</p>`;
-        html += `<p style="font-size:12px;margin:6px 0;font-weight:600;color:#b45309;">💡 ${comp.advice}</p>`;
-      }
-      html += `<div class="source-tag" style="margin-top:6px;">📅 festivals.py → 15 Indian festivals + YoY comparison</div></div>`;
-      const wrapper = document.createElement("div");
-      wrapper.style.cssText = "display:flex;animation:fadeIn 0.3s ease;";
-      wrapper.innerHTML = html;
-      chat.appendChild(wrapper);
-      chat.scrollTop = chat.scrollHeight;
-    }
-  } catch(e){}
-
-  // 3. Credit score
-  try {
-    const res = await fetch(API + "/api/credit-score");
-    const data = await res.json();
-    if (data.status === "ok") {
-      const pct = Math.round(data.credit_score);
-      const barColor = pct >= 75 ? "#10b981" : pct >= 50 ? "#f59e0b" : "#ef4444";
-      let html = `<div class="credit-card"><h3>💳 Paytm Merchant Credit Signal</h3>`;
-      html += `<div class="credit-score-big">${pct}<span style="font-size:16px;opacity:0.7"> / ${data.max_score}</span></div>`;
-      html += `<div class="credit-bar"><div class="credit-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>`;
-      html += `<div class="credit-row"><span>Risk Level</span><span style="font-weight:700">${data.risk_level}</span></div>`;
-      html += `<div class="credit-row"><span>Avg Weekly Revenue</span><span>₹${inr.format(data.avg_weekly_revenue)}</span></div>`;
-      if (data.suggested_loan_limit > 0) {
-        html += `<div class="credit-row"><span>Suggested Loan Limit</span><span style="font-weight:700">₹${inr.format(data.suggested_loan_limit)}</span></div>`;
-      }
-      html += `<p style="font-size:11px;margin:8px 0 2px;opacity:0.85;">📝 ${data.recommendation}</p>`;
-      // Components breakdown
-      html += `<div style="margin-top:8px;border-top:1px solid rgba(255,255,255,0.15);padding-top:6px;">`;
-      for (const [key, comp] of Object.entries(data.components)) {
-        html += `<div class="credit-row"><span>${key} (${Math.round(comp.weight*100)}%)</span><span>${comp.score}/100</span></div>`;
-      }
-      html += `</div>`;
-      html += `<div class="source-tag" style="color:rgba(255,255,255,0.6);margin-top:6px;">📊 credit_score.py → 5-component weighted scoring</div></div>`;
-      const wrapper = document.createElement("div");
-      wrapper.style.cssText = "display:flex;animation:fadeIn 0.3s ease;";
-      wrapper.innerHTML = html;
-      chat.appendChild(wrapper);
-      chat.scrollTop = chat.scrollHeight;
-    }
-  } catch(e){}
 }
 
 // ---- Q&A ----
