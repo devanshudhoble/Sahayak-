@@ -4,333 +4,328 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Sahayak · Paytm for Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --paytm-blue: #00BAF2;
   --paytm-dark: #002970;
-  --bg: #f0f4f8;
+  --bg: #f5f7fa;
   --white: #ffffff;
-  --fg: #1a1a2e;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --bubble-ai: #ffffff;
-  --bubble-user: #00BAF2;
-  --success: #10b981;
-  --tab-inactive: #9ca3af;
+  --fg: #0f172a;
+  --fg2: #334155;
+  --muted: #94a3b8;
+  --border: #e2e8f0;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --sahayak: #00BAF2;
+  --sahayak-dark: #0284c7;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #1a1a2e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  display: flex; align-items: center; justify-content: center;
 }
 
 /* Phone frame */
 .phone {
-  width: 100%;
-  max-width: 420px;
-  height: 100vh;
-  max-height: 820px;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 0 60px rgba(0,186,242,0.15);
+  width: 100%; max-width: 420px; height: 100vh; max-height: 850px;
+  background: var(--bg); display: flex; flex-direction: column;
+  overflow: hidden; position: relative;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
 }
-@media (min-width: 500px) {
-  .phone { border-radius: 32px; height: 92vh; }
-}
+@media (min-width: 500px) { .phone { border-radius: 40px; height: 92vh; border: 6px solid #1e293b; } }
 
 /* Status bar */
 .status-bar {
-  background: var(--paytm-dark);
-  color: white;
-  font-size: 11px;
-  padding: 6px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: var(--paytm-dark); color: white; font-size: 11px;
+  padding: 8px 24px; display: flex; justify-content: space-between; align-items: center;
+  font-weight: 600;
 }
-.status-bar .time { font-weight: 600; }
-.status-bar .icons { display: flex; gap: 6px; font-size: 12px; }
 
 /* App header */
 .app-header {
-  background: linear-gradient(135deg, var(--paytm-dark), #003d99);
-  color: white;
-  padding: 12px 16px 10px;
+  background: linear-gradient(135deg, var(--paytm-dark) 0%, #003a8c 100%);
+  color: white; padding: 14px 18px 12px;
 }
 .app-header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
 }
-.app-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.app-logo .logo-text {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
+.app-logo { display: flex; align-items: center; gap: 10px; }
+.app-logo .logo-text { font-size: 17px; font-weight: 800; letter-spacing: -0.4px; }
 .app-logo .badge {
-  font-size: 10px;
-  background: rgba(255,255,255,0.2);
-  padding: 2px 8px;
-  border-radius: 10px;
+  font-size: 9px; font-weight: 700; background: rgba(0,186,242,0.3);
+  padding: 3px 10px; border-radius: 12px; letter-spacing: 0.03em; text-transform: uppercase;
 }
-.app-header .shop-name {
-  font-size: 12px;
-  opacity: 0.8;
-}
+.header-right { display: flex; gap: 14px; font-size: 18px; opacity: 0.8; }
 
-/* App tabs */
-.app-tabs {
-  display: flex;
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
-  padding: 3px;
-}
+/* Header tabs */
+.app-tabs { display: flex; background: rgba(255,255,255,0.08); border-radius: 12px; padding: 3px; gap: 2px; }
 .app-tab {
-  flex: 1;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 7px 4px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: rgba(255,255,255,0.6);
-  transition: all 0.2s;
-  border: none;
-  background: none;
+  flex: 1; text-align: center; font-size: 11px; font-weight: 700;
+  padding: 8px 4px; border-radius: 10px; cursor: pointer;
+  color: rgba(255,255,255,0.5); transition: all 0.25s; border: none; background: none;
+  letter-spacing: 0.01em;
 }
-.app-tab.active {
-  background: var(--paytm-blue);
-  color: white;
-}
-
-/* Chat area */
-.chat-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px 12px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  scroll-behavior: smooth;
-}
+.app-tab.active { background: var(--paytm-blue); color: white; box-shadow: 0 2px 8px rgba(0,186,242,0.3); }
+.app-tab:not(.active):hover { color: rgba(255,255,255,0.8); }
 
 /* Soundbox indicator */
 .soundbox-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #e8f8fe;
-  border: 1px solid #b3e8fb;
-  border-radius: 12px;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--paytm-dark);
-  animation: fadeIn 0.3s ease;
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(90deg, #ecfdf5, #f0fdfa); border-bottom: 1px solid #d1fae5;
+  padding: 8px 18px; font-size: 12px; color: #065f46; font-weight: 500;
 }
 .soundbox-bar .dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--success);
-  animation: blink 2s infinite;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--success);
+  box-shadow: 0 0 6px rgba(34,197,94,0.4); animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+  50% { box-shadow: 0 0 12px rgba(34,197,94,0.6); }
 }
 
-/* Chat bubbles */
+/* Tab panels */
+.tab-panel { display: none; flex: 1; overflow-y: auto; flex-direction: column; }
+.tab-panel.active { display: flex; }
+
+/* ==================== CHAT (Sahayak tab) ==================== */
+.chat-area {
+  flex: 1; overflow-y: auto; padding: 14px 14px 8px;
+  display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth;
+}
 .bubble {
-  max-width: 82%;
-  padding: 10px 14px;
-  border-radius: 16px;
-  font-size: 14px;
-  line-height: 1.45;
-  animation: fadeIn 0.3s ease;
+  max-width: 84%; padding: 12px 16px; border-radius: 18px;
+  font-size: 14px; line-height: 1.5; animation: fadeIn 0.3s ease;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .bubble.ai {
-  background: var(--bubble-ai);
-  color: var(--fg);
-  border-bottom-left-radius: 4px;
-  align-self: flex-start;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  background: var(--white); color: var(--fg); align-self: flex-start;
+  border-bottom-left-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .bubble.user {
-  background: var(--bubble-user);
-  color: white;
-  border-bottom-right-radius: 4px;
-  align-self: flex-end;
+  background: linear-gradient(135deg, var(--paytm-blue), var(--sahayak-dark));
+  color: white; align-self: flex-end; border-bottom-right-radius: 6px;
 }
 .bubble .label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 3px;
-  color: var(--paytm-blue);
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 4px; color: var(--paytm-blue);
 }
 .bubble.user .label { color: rgba(255,255,255,0.7); }
-.bubble .source-tag {
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 4px;
-  font-style: italic;
-}
 
 /* Action buttons */
-.action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
+.action-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .action-btn {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  border: 2px solid var(--paytm-blue);
-  border-radius: 20px;
-  padding: 7px 16px;
-  background: var(--paytm-blue);
-  color: white;
-  transition: all 0.2s;
+  font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  border: 2px solid var(--paytm-blue); border-radius: 24px; padding: 8px 20px;
+  background: var(--paytm-blue); color: white; transition: all 0.2s;
 }
-.action-btn:hover { background: var(--paytm-dark); border-color: var(--paytm-dark); }
+.action-btn:hover { background: var(--paytm-dark); border-color: var(--paytm-dark); transform: translateY(-1px); }
 .action-btn.ghost { background: transparent; color: var(--paytm-blue); }
 .action-btn.ghost:hover { background: var(--paytm-blue); color: white; }
-.action-btn:disabled { opacity: 0.4; cursor: default; }
+.action-btn:disabled { opacity: 0.3; cursor: default; transform: none; }
 
-.budget-row {
-  display: flex; gap: 6px; align-items: center; margin-top: 6px;
-}
+.budget-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
 .budget-row input {
-  font: inherit; font-size: 13px;
-  border: 2px solid var(--border); border-radius: 10px;
-  padding: 6px 10px; width: 100px;
-  background: var(--bg); color: var(--fg);
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  border: 2px solid var(--border); border-radius: 12px; padding: 8px 12px;
+  width: 110px; background: var(--bg); color: var(--fg);
 }
 .budget-row input:focus { border-color: var(--paytm-blue); outline: none; }
 
 /* Measure card */
 .measure-card {
-  background: var(--white);
-  border-radius: 14px;
-  padding: 12px 14px;
-  max-width: 82%;
-  align-self: flex-start;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-  animation: fadeIn 0.3s ease;
+  background: var(--white); border-radius: 16px; padding: 14px 16px;
+  max-width: 84%; align-self: flex-start;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05); animation: fadeIn 0.3s ease;
   border-left: 3px solid var(--success);
 }
-.measure-card h3 { font-size: 13px; color: var(--success); font-weight: 700; margin-bottom: 6px; }
-.measure-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }
-.measure-row .val { font-weight: 700; }
+.measure-card h3 { font-size: 14px; color: var(--success); font-weight: 800; margin-bottom: 8px; }
+.measure-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; color: var(--fg2); }
+.measure-row .val { font-weight: 800; color: var(--fg); }
 
-/* Suggestion chips */
-.chips {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  max-width: 88%; align-self: flex-start;
-  animation: fadeIn 0.3s ease;
-}
+/* Chips */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; max-width: 90%; align-self: flex-start; animation: fadeIn 0.3s ease; }
 .chip {
-  font: inherit; font-size: 12px;
-  cursor: pointer;
-  border: 1.5px solid var(--paytm-blue);
-  border-radius: 16px;
-  padding: 5px 12px;
-  background: var(--white);
-  color: var(--paytm-blue);
-  transition: all 0.2s;
+  font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--border); border-radius: 20px; padding: 6px 14px;
+  background: var(--white); color: var(--fg2); transition: all 0.2s;
 }
-.chip:hover { background: var(--paytm-blue); color: white; }
+.chip:hover { border-color: var(--paytm-blue); color: var(--paytm-blue); background: #f0f9ff; }
+
+/* Festival card */
+.festival-card {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 16px; padding: 14px 16px;
+  max-width: 84%; align-self: flex-start; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  animation: fadeIn 0.3s ease; border-left: 3px solid var(--warn);
+}
+.festival-card h3 { font-size: 14px; color: #92400e; font-weight: 800; margin-bottom: 6px; }
+
+/* Credit card */
+.credit-card {
+  background: linear-gradient(135deg, #002970 0%, #0369a1 100%);
+  border-radius: 16px; padding: 16px; max-width: 84%; align-self: flex-start;
+  color: white; animation: fadeIn 0.3s ease; box-shadow: 0 4px 16px rgba(0,41,112,0.3);
+}
+.credit-card h3 { font-size: 14px; font-weight: 800; margin-bottom: 10px; opacity: 0.95; }
+.credit-score-big { font-size: 40px; font-weight: 800; text-align: center; margin: 10px 0; }
+.credit-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); margin: 10px 0; }
+.credit-bar-fill { height: 100%; border-radius: 3px; }
+.credit-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; opacity: 0.9; }
+
+/* Category selector */
+.cat-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.cat-btn {
+  font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+  border: 1.5px solid var(--border); border-radius: 20px; padding: 6px 14px;
+  background: var(--white); color: var(--fg2); transition: all 0.2s;
+}
+.cat-btn:hover { border-color: var(--paytm-blue); color: var(--paytm-blue); }
+.cat-btn.active { background: var(--paytm-blue); color: white; border-color: var(--paytm-blue); }
 
 /* Input bar */
 .input-bar {
-  background: var(--white);
-  border-top: 1px solid var(--border);
-  padding: 8px 12px;
-  display: flex;
-  gap: 6px;
-  align-items: center;
+  background: var(--white); border-top: 1px solid var(--border);
+  padding: 10px 14px; display: flex; gap: 8px; align-items: center;
 }
 .input-bar select {
-  font: inherit; font-size: 11px;
-  border: 1px solid var(--border); border-radius: 16px;
-  padding: 6px 8px; background: var(--bg); color: var(--fg); cursor: pointer;
+  font-family: inherit; font-size: 11px; font-weight: 600;
+  border: 1.5px solid var(--border); border-radius: 20px;
+  padding: 8px 10px; background: var(--bg); color: var(--fg2); cursor: pointer;
 }
 .input-bar input {
-  flex: 1; font: inherit; font-size: 14px;
-  border: 2px solid var(--border); border-radius: 20px;
-  padding: 8px 14px; background: var(--bg); color: var(--fg);
+  flex: 1; font-family: inherit; font-size: 14px;
+  border: 2px solid var(--border); border-radius: 24px;
+  padding: 10px 16px; background: var(--bg); color: var(--fg);
 }
-.input-bar input:focus { border-color: var(--paytm-blue); outline: none; }
+.input-bar input:focus { border-color: var(--paytm-blue); outline: none; background: var(--white); }
+.input-bar input::placeholder { color: var(--muted); }
 .mic-btn, .send-btn {
-  width: 38px; height: 38px; border-radius: 50%;
-  border: none; background: var(--paytm-blue); color: white;
-  font-size: 16px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: background 0.2s;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: var(--paytm-blue); color: white; font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s;
 }
-.mic-btn:hover, .send-btn:hover { background: var(--paytm-dark); }
-.mic-btn.listening { background: #ef4444; animation: pulse 1s infinite; }
+.mic-btn:hover, .send-btn:hover { background: var(--paytm-dark); transform: scale(1.05); }
+.mic-btn.listening { background: var(--danger); animation: pulse 1s infinite; }
 @keyframes pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+  50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
 }
 
 /* Bottom nav */
 .bottom-nav {
-  background: var(--white);
-  border-top: 1px solid var(--border);
-  display: flex;
-  padding: 6px 0 10px;
+  background: var(--white); border-top: 1px solid var(--border);
+  display: flex; padding: 6px 0 12px;
 }
 .nav-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  font-size: 10px;
-  color: var(--tab-inactive);
-  cursor: pointer;
-  border: none;
-  background: none;
-  padding: 4px 0;
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 10px; font-weight: 700; color: var(--muted); cursor: pointer;
+  border: none; background: none; padding: 6px 0; transition: color 0.2s;
 }
 .nav-item.active { color: var(--paytm-blue); }
-.nav-item .nav-icon { font-size: 18px; }
-.nav-item .nav-label { font-weight: 600; }
+.nav-item .nav-icon { font-size: 20px; }
 
 /* Typing */
-.typing { display: flex; gap: 3px; padding: 6px 14px; }
+.typing { display: flex; gap: 4px; padding: 8px 16px; }
 .typing span {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--muted); opacity: 0.4;
-  animation: blink 1.4s infinite;
+  width: 8px; height: 8px; border-radius: 50%; background: var(--muted);
+  opacity: 0.3; animation: blink 1.4s infinite;
 }
 .typing span:nth-child(2) { animation-delay: 0.2s; }
 .typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes blink {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
+@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+
+/* ==================== HOME TAB ==================== */
+.home-panel { padding: 16px; gap: 14px; background: var(--bg); }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-card {
+  background: var(--white); border-radius: 16px; padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
+.stat-card .stat-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-card .stat-value { font-size: 22px; font-weight: 800; color: var(--fg); margin-top: 6px; }
+.stat-card .stat-sub { font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 500; }
+.stat-card.highlight {
+  background: linear-gradient(135deg, var(--paytm-dark), #0369a1); color: white;
+  box-shadow: 0 4px 16px rgba(0,41,112,0.2);
+}
+.stat-card.highlight .stat-label { color: rgba(255,255,255,0.6); }
+.stat-card.highlight .stat-value { color: white; }
+.stat-card.highlight .stat-sub { color: rgba(255,255,255,0.6); }
+.home-section {
+  background: var(--white); border-radius: 16px; padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.home-section h3 { font-size: 14px; font-weight: 800; color: var(--fg); margin-bottom: 12px; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+.bar-label { width: 52px; text-align: right; color: var(--muted); font-weight: 700; font-size: 11px; }
+.bar-track { flex: 1; height: 20px; background: var(--bg); border-radius: 10px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--paytm-blue), #0284c7); transition: width 0.8s ease; }
+.bar-val { width: 60px; font-weight: 800; font-size: 11px; color: var(--fg); }
+
+/* ==================== PAYMENTS TAB ==================== */
+.payments-panel { padding: 16px; gap: 8px; background: var(--bg); }
+.txn-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.txn-header h3 { font-size: 16px; font-weight: 800; color: var(--fg); }
+.txn-header .txn-total { font-size: 13px; color: var(--success); font-weight: 700; }
+.txn-item {
+  background: var(--white); border-radius: 14px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03); animation: fadeIn 0.3s ease;
+}
+.txn-icon {
+  width: 40px; height: 40px; border-radius: 12px; display: flex;
+  align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.txn-icon.qr { background: #e0f2fe; }
+.txn-icon.sound { background: #fef3c7; }
+.txn-icon.upi { background: #ede9fe; }
+.txn-details { flex: 1; }
+.txn-details .txn-name { font-size: 13px; font-weight: 600; color: var(--fg); }
+.txn-details .txn-time { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.txn-amount { font-size: 15px; font-weight: 800; color: var(--success); }
+
+/* ==================== ACCOUNT TAB ==================== */
+.account-panel { padding: 16px; gap: 12px; background: var(--bg); }
+.profile-card {
+  background: linear-gradient(135deg, var(--paytm-dark), #0369a1);
+  border-radius: 20px; padding: 24px 20px; color: white; text-align: center;
+  box-shadow: 0 4px 20px rgba(0,41,112,0.25);
+}
+.profile-card .avatar {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin: 0 auto 12px;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+.profile-card .profile-name { font-size: 20px; font-weight: 800; }
+.profile-card .profile-sub { font-size: 13px; opacity: 0.7; margin-top: 4px; font-weight: 500; }
+.setting-group {
+  background: var(--white); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.setting-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer;
+  font-size: 14px; color: var(--fg); font-weight: 500; transition: background 0.15s;
+}
+.setting-item:last-child { border-bottom: none; }
+.setting-item:active { background: var(--bg); }
+.setting-item .si-left { display: flex; align-items: center; gap: 12px; }
+.setting-item .si-icon { font-size: 20px; }
+.setting-item .si-arrow { color: var(--muted); font-size: 16px; }
+.setting-item .si-value { color: var(--muted); font-size: 13px; font-weight: 600; }
 
 .footer-note {
-  text-align: center; font-size: 9px;
-  color: var(--muted); padding: 4px; background: var(--bg);
+  text-align: center; font-size: 9px; color: var(--muted);
+  padding: 4px; background: var(--bg); font-weight: 500;
 }
 
 [hidden] { display: none !important; }
@@ -339,56 +334,140 @@ body {
 <body>
 
 <div class="phone">
-  <!-- Status bar -->
   <div class="status-bar">
-    <span class="time" id="clock">12:30</span>
-    <span class="icons">📶 🔋</span>
+    <span id="clock">12:30</span>
+    <span>●●● 🔋</span>
   </div>
 
-  <!-- App header -->
   <div class="app-header">
     <div class="app-header-top">
       <div class="app-logo">
         <span class="logo-text">Paytm Business</span>
-        <span class="badge">for Merchants</span>
+        <span class="badge">Sahayak AI</span>
       </div>
+      <div class="header-right">🔔 ⚙️</div>
     </div>
     <div class="app-tabs">
-      <button class="app-tab" onclick="switchTab('home')">🏠 Home</button>
-      <button class="app-tab" onclick="switchTab('payments')">💳 Payments</button>
-      <button class="app-tab active" id="tab-sahayak" onclick="switchTab('sahayak')">🤖 Sahayak</button>
-      <button class="app-tab" onclick="switchTab('account')">👤 Account</button>
+      <button class="app-tab" onclick="switchTab('home')">Home</button>
+      <button class="app-tab" onclick="switchTab('payments')">Payments</button>
+      <button class="app-tab active" onclick="switchTab('sahayak')">Sahayak</button>
+      <button class="app-tab" onclick="switchTab('account')">Account</button>
     </div>
   </div>
 
-  <!-- Soundbox connection indicator -->
-  <div class="soundbox-bar">
+  <div class="soundbox-bar" id="soundbox-bar">
     <span class="dot"></span>
-    <span>🔊 Soundbox connected · Voice active · Will speak insights aloud</span>
+    <span>Soundbox connected · Sahayak active</span>
   </div>
 
-  <!-- Chat -->
-  <div class="chat-area" id="chat"></div>
+  <!-- HOME -->
+  <div class="tab-panel home-panel" id="panel-home">
+    <div class="stat-grid">
+      <div class="stat-card highlight">
+        <div class="stat-label">Today's Sales</div>
+        <div class="stat-value" id="home-today-sales">—</div>
+        <div class="stat-sub" id="home-today-txns">Loading...</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">This Week</div>
+        <div class="stat-value" id="home-week-sales">—</div>
+        <div class="stat-sub" id="home-week-change"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Daily Average</div>
+        <div class="stat-value" id="home-avg-daily">—</div>
+        <div class="stat-sub">Last 7 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Credit Score</div>
+        <div class="stat-value" id="home-credit">—</div>
+        <div class="stat-sub" id="home-risk"></div>
+      </div>
+    </div>
+    <div class="home-section">
+      <h3>Peak Business Hours</h3>
+      <div id="home-peak-bars"></div>
+    </div>
+    <div class="home-section" id="home-festival-section" style="display:none;">
+      <h3 id="home-fest-title">Festival Alert</h3>
+      <p style="font-size:13px;color:var(--fg2);line-height:1.5;" id="home-fest-advice"></p>
+    </div>
+    <div class="home-section">
+      <h3>Sahayak Recommendation</h3>
+      <p style="font-size:13px;color:var(--fg2);line-height:1.5;" id="home-suggestion">Loading...</p>
+      <button class="action-btn" style="margin-top:10px;font-size:12px;" onclick="switchTab('sahayak')">Chat with Sahayak →</button>
+    </div>
+  </div>
 
-  <!-- Input bar -->
-  <div class="input-bar">
+  <!-- PAYMENTS -->
+  <div class="tab-panel payments-panel" id="panel-payments">
+    <div class="txn-header">
+      <h3>Recent Payments</h3>
+      <span class="txn-total" id="pay-total"></span>
+    </div>
+    <div id="txn-list"></div>
+  </div>
+
+  <!-- SAHAYAK -->
+  <div class="tab-panel active" id="panel-sahayak" style="display:flex;flex-direction:column;">
+    <div class="chat-area" id="chat"></div>
+  </div>
+
+  <!-- ACCOUNT -->
+  <div class="tab-panel account-panel" id="panel-account">
+    <div class="profile-card">
+      <div class="avatar">🏪</div>
+      <div class="profile-name">Sunita General Store</div>
+      <div class="profile-sub" id="acct-category">Kirana Store</div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-item" onclick="switchTab('sahayak')">
+        <span class="si-left"><span class="si-icon">🤖</span> Sahayak AI</span>
+        <span style="color:var(--success);font-size:12px;font-weight:700;">Active</span>
+      </div>
+      <div class="setting-item">
+        <span class="si-left"><span class="si-icon">🔊</span> Soundbox</span>
+        <span style="color:var(--success);font-size:12px;font-weight:700;">Connected</span>
+      </div>
+      <div class="setting-item">
+        <span class="si-left"><span class="si-icon">🗣️</span> Voice Language</span>
+        <span class="si-value">Hindi + English</span>
+      </div>
+      <div class="setting-item">
+        <span class="si-left"><span class="si-icon">💰</span> Budget Cap</span>
+        <span class="si-value" id="acct-cap">₹1,000</span>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:800;color:var(--fg);margin:2px 0 0 4px;">Shop Category</div>
+    <div class="setting-group" id="acct-categories"></div>
+    <div class="setting-group">
+      <div class="setting-item">
+        <span class="si-left"><span class="si-icon">📊</span> Credit Score Report</span>
+        <span class="si-arrow">›</span>
+      </div>
+      <div class="setting-item">
+        <span class="si-left"><span class="si-icon">📞</span> Help & Support</span>
+        <span class="si-arrow">›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input (Sahayak only) -->
+  <div class="input-bar" id="input-bar">
     <select id="lang"><option value="en-IN">EN</option><option value="hi-IN">HI</option></select>
-    <input id="q" type="text" placeholder="Ask Sahayak..." aria-label="Your question">
+    <input id="q" type="text" placeholder="Ask Sahayak anything..." aria-label="Your question">
     <button class="mic-btn" id="mic" title="Voice">🎤</button>
     <button class="send-btn" id="send" title="Send">➤</button>
   </div>
 
-  <!-- Bottom nav -->
   <div class="bottom-nav">
-    <button class="nav-item" onclick="switchTab('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
-    <button class="nav-item" onclick="switchTab('payments')"><span class="nav-icon">💳</span><span class="nav-label">Payments</span></button>
-    <button class="nav-item active" id="nav-sahayak"><span class="nav-icon">🤖</span><span class="nav-label">Sahayak</span></button>
-    <button class="nav-item" onclick="switchTab('account')"><span class="nav-icon">👤</span><span class="nav-label">Account</span></button>
+    <button class="nav-item" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" id="nav-payments" onclick="switchTab('payments')"><span class="nav-icon">💳</span><span class="nav-label">Payments</span></button>
+    <button class="nav-item active" id="nav-sahayak" onclick="switchTab('sahayak')"><span class="nav-icon">🤖</span><span class="nav-label">Sahayak</span></button>
+    <button class="nav-item" id="nav-account" onclick="switchTab('account')"><span class="nav-icon">👤</span><span class="nav-label">Account</span></button>
   </div>
 
-  <div class="footer-note">
-    Prototype · Synthetic data · Not affiliated with Paytm · <a href="/docs" style="color:var(--paytm-blue)">API</a>
-  </div>
+  <div class="footer-note">Prototype · Synthetic data</div>
 </div>
 
 <script>
@@ -401,16 +480,117 @@ let S = {};
 function updateClock() {
   const now = new Date();
   document.getElementById("clock").textContent =
-    now.getHours().toString().padStart(2, "0") + ":" + now.getMinutes().toString().padStart(2, "0");
+    now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
 }
 updateClock(); setInterval(updateClock, 30000);
 
+// ==================== TAB SWITCHING ====================
+let currentTab = "sahayak";
 function switchTab(t) {
-  if (t !== "sahayak") {
-    alert("This is a prototype — only the Sahayak tab is active.");
-  }
+  currentTab = t;
+  document.querySelectorAll(".app-tab").forEach(b => b.classList.remove("active"));
+  document.querySelector(`.app-tab[onclick="switchTab('${t}')"]`).classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+  document.getElementById("nav-" + t).classList.add("active");
+  document.querySelectorAll(".tab-panel").forEach(p => { p.classList.remove("active"); p.style.display = "none"; });
+  const panel = document.getElementById("panel-" + t);
+  panel.classList.add("active"); panel.style.display = "flex";
+  document.getElementById("input-bar").style.display = t === "sahayak" ? "flex" : "none";
+  if (t === "home") loadHome();
+  if (t === "payments") loadPayments();
+  if (t === "account") loadAccount();
 }
 
+// ==================== HOME TAB ====================
+async function loadHome() {
+  try {
+    const [statusRes, creditRes, festRes] = await Promise.all([
+      fetch(API + "/api/status"), fetch(API + "/api/credit-score"), fetch(API + "/api/festival")
+    ]);
+    const st = await statusRes.json();
+    const cr = await creditRes.json();
+    const fe = await festRes.json();
+    const totalToday = st.peak_hours ? st.peak_hours.reduce((s,h) => s + h[1], 0) : 0;
+    const txnEst = st.peak_hours ? st.peak_hours.length * 15 : 0;
+    document.getElementById("home-today-sales").textContent = "₹" + inr.format(totalToday);
+    document.getElementById("home-today-txns").textContent = txnEst + " transactions";
+    document.getElementById("home-week-sales").textContent = "₹" + inr.format(Math.round(totalToday * 6.5));
+    document.getElementById("home-week-change").textContent = st.drop_pct ? "↓ " + st.drop_pct + "% on " + st.weak_weekday + "s" : "Stable";
+    document.getElementById("home-avg-daily").textContent = "₹" + inr.format(Math.round(totalToday * 0.95));
+    if (cr.status === "ok") {
+      document.getElementById("home-credit").textContent = cr.credit_score + "/100";
+      document.getElementById("home-risk").textContent = cr.risk_level + " Risk";
+    }
+    const barsDiv = document.getElementById("home-peak-bars");
+    barsDiv.innerHTML = "";
+    if (st.peak_hours) {
+      const maxVal = Math.max(...st.peak_hours.map(h => h[1]));
+      st.peak_hours.slice(0, 5).forEach(h => {
+        const pct = Math.round(h[1] / maxVal * 100);
+        barsDiv.innerHTML += `<div class="bar-row"><span class="bar-label">${hourLabel(h[0])}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span class="bar-val">₹${inr.format(h[1])}</span></div>`;
+      });
+    }
+    if (fe.upcoming) {
+      document.getElementById("home-festival-section").style.display = "block";
+      document.getElementById("home-fest-title").textContent = fe.upcoming.name + " — " + fe.upcoming.days_until + " days away";
+      document.getElementById("home-fest-advice").textContent = fe.comparison ? fe.comparison.advice : "Get ready for the festive rush!";
+    }
+    document.getElementById("home-suggestion").textContent = st.suggestion;
+  } catch(e) {}
+}
+
+// ==================== PAYMENTS TAB ====================
+async function loadPayments() {
+  const methods = [
+    { name: "QR Code", icon: "📱", cls: "qr" },
+    { name: "Soundbox", icon: "🔊", cls: "sound" },
+    { name: "UPI Transfer", icon: "💸", cls: "upi" },
+  ];
+  const names = ["Rahul Sharma","Priya Mehta","Amit Kumar","Neha Gupta","Vikram Reddy","Anita Das","Suresh Bhat","Meena Tiwari","Deepak Lal","Kavita Patil","Raju Yadav","Suman Joshi"];
+  const list = document.getElementById("txn-list");
+  list.innerHTML = "";
+  let dayTotal = 0;
+  const now = new Date();
+  for (let i = 0; i < 12; i++) {
+    const m = methods[Math.floor(Math.random() * methods.length)];
+    const amt = Math.round((Math.random() * 800 + 30) / 10) * 10;
+    dayTotal += amt;
+    const mins = i * 14 + Math.floor(Math.random() * 12);
+    const t = new Date(now - mins * 60000);
+    const timeStr = t.getHours().toString().padStart(2,"0") + ":" + t.getMinutes().toString().padStart(2,"0");
+    list.innerHTML += `<div class="txn-item"><div class="txn-icon ${m.cls}">${m.icon}</div><div class="txn-details"><div class="txn-name">${names[i]}</div><div class="txn-time">${timeStr} · ${m.name}</div></div><div class="txn-amount">+₹${inr.format(amt)}</div></div>`;
+  }
+  document.getElementById("pay-total").textContent = "₹" + inr.format(dayTotal) + " today";
+}
+
+// ==================== ACCOUNT TAB ====================
+async function loadAccount() {
+  try {
+    const [catRes, statusRes] = await Promise.all([
+      fetch(API + "/api/categories"), fetch(API + "/api/status")
+    ]);
+    const cats = await catRes.json();
+    const st = await statusRes.json();
+    document.getElementById("acct-category").textContent = st.category_label;
+    document.getElementById("acct-cap").textContent = "₹" + inr.format(st.cap);
+    const div = document.getElementById("acct-categories");
+    div.innerHTML = "";
+    cats.categories.forEach(c => {
+      const isActive = c.id === cats.current;
+      div.innerHTML += `<div class="setting-item" onclick="changeCategory('${c.id}')" style="${isActive?'background:#f0f9ff;':''}"><span class="si-left"><span class="si-icon">🏪</span> ${c.label}</span>${isActive?'<span style="color:var(--success);font-size:12px;font-weight:700;">Selected</span>':'<span class="si-arrow">›</span>'}</div>`;
+    });
+  } catch(e) {}
+}
+window.changeCategory = async function(catId) {
+  try {
+    await fetch(API+"/api/category",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({category:catId})});
+    loadAccount();
+    const res = await fetch(API + "/api/status");
+    S = await res.json();
+  } catch(e){}
+};
+
+// ==================== HELPERS ====================
 function hourLabel(h) { return (h % 12 || 12) + (h >= 12 ? " pm" : " am"); }
 
 function addBubble(text, type, extra) {
@@ -420,7 +600,7 @@ function addBubble(text, type, extra) {
     div.innerHTML = (extra ? `<div class="label">${extra}</div>` : "") + text;
   } else if (type === "user") {
     div.className = "bubble user";
-    div.innerHTML = `<div class="label">You</div>` + text;
+    div.textContent = text;
   } else if (type === "measure") {
     div.className = "measure-card";
     div.innerHTML = text;
@@ -435,8 +615,7 @@ function addChips(chips) {
   div.className = "chips";
   chips.forEach(c => {
     const btn = document.createElement("button");
-    btn.className = "chip";
-    btn.textContent = c;
+    btn.className = "chip"; btn.textContent = c;
     btn.onclick = () => { div.remove(); askQuestion(c); };
     div.appendChild(btn);
   });
@@ -448,18 +627,17 @@ function showTyping() {
   const div = document.createElement("div");
   div.className = "bubble ai"; div.id = "typing";
   div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
 }
 function hideTyping() { const el = document.getElementById("typing"); if (el) el.remove(); }
 
-// ---- Fetch real data and start ----
+// ==================== MAIN INIT ====================
 async function init() {
   try {
     const res = await fetch(API + "/api/status");
     S = await res.json();
   } catch (e) {
-    addBubble("Server not connected. Run start.bat first.", "ai", "Sahayak");
+    addBubble("Server not connected. Please run <strong>start.bat</strong> first.", "ai", "Sahayak");
     return;
   }
   startConversation();
@@ -473,50 +651,45 @@ function startConversation() {
     addBubble("Namaste Sunita ji! 🙏 Main aapka Sahayak hoon — aapke Soundbox se juda.", "ai", "Sahayak");
     setTimeout(() => {
       addBubble(
-        `Aapki <strong>${day}</strong> ki sales mein <strong>${pct}%</strong> ki giravat aayi hai pichhle 3 hafton mein.` +
-        `<div class="source-tag">📊 trend.py → weekday comparison from Paytm transactions</div>`, "ai"
+        `Aapki <strong>${day}</strong> ki sales mein <strong>${pct}%</strong> ki giravat aayi hai pichhle 3 hafton mein.`, "ai", "Sahayak"
       );
       setTimeout(() => {
-        addBubble(
-          S.explanation +
-          `<div class="source-tag">📊 explainer.py → plain-language insight</div>`, "ai"
-        );
+        addBubble(S.explanation, "ai", "Sahayak");
         setTimeout(() => {
           if (S.peak_hours && S.peak_hours.length >= 2) {
             addBubble(
-              `Sabse zyada business: <strong>${hourLabel(S.peak_hours[0][0])}</strong> (₹${inr.format(S.peak_hours[0][1])}) aur <strong>${hourLabel(S.peak_hours[1][0])}</strong> (₹${inr.format(S.peak_hours[1][1])}).` +
-              `<div class="source-tag">📊 SQLite → top hours by SUM(amount)</div>`, "ai"
+              `Sabse zyada business: <strong>${hourLabel(S.peak_hours[0][0])}</strong> (₹${inr.format(S.peak_hours[0][1])}) aur <strong>${hourLabel(S.peak_hours[1][0])}</strong> (₹${inr.format(S.peak_hours[1][1])}).`, "ai", "Sahayak"
             );
           }
-          setTimeout(() => showSuggestion(), 700);
-        }, 700);
-      }, 900);
-    }, 900);
-  }, 400);
+          setTimeout(() => showSuggestion(), 600);
+        }, 600);
+      }, 800);
+    }, 800);
+  }, 300);
 }
 
 function showSuggestion() {
   addBubble(
-    `💡 <strong>${S.suggestion}</strong><br><br>Bina aapki ijazat ke kuch nahi hoga.` +
-    `<div class="source-tag">📊 planner.py → capped experiment</div>` +
+    `<strong>${S.suggestion}</strong><br><br>Bina aapki ijazat ke kuch nahi hoga.` +
     `<div class="action-row">` +
-    `<button class="action-btn" onclick="decide('approve')">✅ Haan</button>` +
-    `<button class="action-btn ghost" onclick="showBudgetChange()">💰 Budget</button>` +
-    `<button class="action-btn ghost" onclick="decide('skip')">Nahi</button>` +
+    `<button class="action-btn" onclick="decide('approve')">Haan, chalao</button>` +
+    `<button class="action-btn ghost" onclick="showBudgetChange()">Budget badlo</button>` +
+    `<button class="action-btn ghost" onclick="decide('skip')">Abhi nahi</button>` +
     `</div>` +
     `<div class="budget-row" id="budget-row" hidden>` +
     `<input type="number" id="cap-input" min="100" max="${S.max_cap||1500}" step="100" value="${S.cap}" placeholder="₹">` +
     `<button class="action-btn" onclick="applyBudget()">Set</button>` +
-    `</div>`, "ai", "Your decision"
+    `</div>`, "ai", "Sahayak"
   );
   setTimeout(() => {
     addChips([
-      `Why are ${S.weak_weekday||'Thursday'} sales down?`,
+      `${S.weak_weekday||'Thursday'} sales kyun kam hai?`,
       "Sabse busy time kab hai?",
       "Kya try karun?",
-      "Aaj kitna kamaya?"
+      "Aaj kitna hua?"
     ]);
-  }, 500);
+    setTimeout(() => loadPhase2(), 500);
+  }, 400);
 }
 
 window.showBudgetChange = function() {
@@ -525,33 +698,31 @@ window.showBudgetChange = function() {
 };
 window.applyBudget = function() {
   const v = Number(document.getElementById("cap-input").value);
-  if (!v || v < 100) return alert("Min ₹100");
-  if (v > (S.max_cap||1500)) return alert(`Max ₹${inr.format(S.max_cap||1500)}`);
-  S.cap = v;
-  decide("change");
+  if (!v || v < 100) return;
+  if (v > (S.max_cap||1500)) return;
+  S.cap = v; decide("change");
 };
 
 window.decide = async function(d) {
   document.querySelectorAll(".action-btn").forEach(b => b.disabled = true);
   const br = document.getElementById("budget-row"); if (br) br.remove();
-
   if (d === "skip") {
     addBubble("Nahi, abhi nahi.", "user");
     fetch(API+"/api/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision:"skip"})}).catch(()=>{});
     S.decision = "skipped";
-    setTimeout(()=> addBubble("Koi baat nahi! Main data dekhta rahunga. Jab zaroorat ho, pooch lena. 👍","ai","Sahayak"), 500);
+    setTimeout(()=> addBubble("Koi baat nahi! Main data dekhta rahunga. Jab zaroorat ho, pooch lena.","ai","Sahayak"), 400);
   } else {
     const cap = d==="change" ? S.cap : (S.cap||1000);
-    addBubble(d==="change" ? `Haan, ₹${inr.format(cap)} budget se chalao` : "Haan, chalao! 👍","user");
+    addBubble(d==="change" ? `Haan, ₹${inr.format(cap)} budget se chalao` : "Haan, chalao!", "user");
     try {
       const res = await fetch(API+"/api/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision:d==="change"?"change":"approve",cap:d==="change"?cap:null})});
       const data = await res.json();
       S.decision = data.decision; S.cap = data.cap;
     } catch(e){}
     setTimeout(()=>{
-      addBubble("Chaliye! Test shuru ho gaya. 3 hafton mein result bataunga. ✅","ai","Sahayak");
-      setTimeout(()=> fetchMeasure(), 1000);
-    }, 500);
+      addBubble("Done! Test shuru ho gaya. 3 hafton mein result bataunga.","ai","Sahayak");
+      setTimeout(()=> fetchMeasure(), 800);
+    }, 400);
   }
 };
 
@@ -563,20 +734,96 @@ async function fetchMeasure() {
       const m = data.measure;
       const sign = m.change_pct >= 0 ? "+" : "";
       addBubble(
-        `<h3>📈 Test Result</h3>`+
+        `<h3>Test Result</h3>`+
         `<div class="measure-row"><span>${S.weak_weekday||'Thursday'} avg (test)</span><span class="val">₹${inr.format(m.test_avg)}</span></div>`+
         `<div class="measure-row"><span>${S.weak_weekday||'Thursday'} avg (before)</span><span class="val">₹${inr.format(m.baseline_avg)}</span></div>`+
-        `<div class="measure-row"><span>Change</span><span class="val" style="color:${m.change_pct>=0?'var(--success)':'#ef4444'}">${sign}${m.change_pct}%</span></div>`+
-        `<div class="source-tag">📊 planner.py → measure() from DB</div>`, "measure"
+        `<div class="measure-row"><span>Change</span><span class="val" style="color:${m.change_pct>=0?'var(--success)':'var(--danger)'}">${sign}${m.change_pct}%</span></div>`, "measure"
       );
-      setTimeout(()=> addBubble(`${m.change_pct>=0?'Badhai ho':'Hmm'}! ${S.weak_weekday||'Thursday'} sales mein <strong>${sign}${m.change_pct}%</strong> ka change aaya. ${m.note}`,"ai","Sahayak"), 700);
+      setTimeout(()=> addBubble(`${m.change_pct>=0?'Badhai ho':'Hmm'}! ${S.weak_weekday||'Thursday'} sales mein <strong>${sign}${m.change_pct}%</strong> ka change aaya. ${m.note}`,"ai","Sahayak"), 600);
     } else {
       addBubble("Test period complete hone par result bataunga.","ai","Sahayak");
     }
   } catch(e){ addBubble("Result baad mein check karna.","ai","Sahayak"); }
 }
 
-// ---- Q&A ----
+// ==================== PHASE 2 CARDS ====================
+async function loadPhase2() {
+  // Category selector
+  try {
+    const res = await fetch(API + "/api/categories");
+    const data = await res.json();
+    let html = `Aapki dukaan: <strong>${S.category_label||'Kirana Store'}</strong><br><span style="font-size:12px;color:var(--fg2);">Tap to change — suggestions update automatically</span><div class="cat-selector">`;
+    data.categories.forEach(c => {
+      html += `<button class="cat-btn${c.id===data.current?' active':''}" data-cat="${c.id}">${c.label}</button>`;
+    });
+    html += `</div>`;
+    const bub = addBubble(html, "ai", "Sahayak");
+    bub.querySelectorAll(".cat-btn").forEach(btn => {
+      btn.onclick = async () => {
+        bub.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        try {
+          await fetch(API+"/api/category",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({category:btn.dataset.cat})});
+          const st = await (await fetch(API+"/api/status")).json();
+          S = st;
+          addBubble(`Category changed to <strong>${st.category_label}</strong>.<br>New suggestion: ${st.suggestion}`, "ai", "Sahayak");
+        } catch(e){}
+      };
+    });
+  } catch(e){}
+
+  // Festival alert
+  try {
+    const res = await fetch(API + "/api/festival");
+    const data = await res.json();
+    if (data.upcoming) {
+      const f = data.upcoming, comp = data.comparison;
+      let html = `<div class="festival-card"><h3>${f.name} — ${f.days_until} din baaki!</h3>`;
+      html += `<p style="font-size:12px;margin:4px 0;color:#78350f;">Date: ${f.date}</p>`;
+      if (comp) {
+        html += `<p style="font-size:12px;margin:3px 0;color:#78350f;">Last year: ₹${inr.format(comp.last_year_estimated_total)} (${comp.multiplier}x normal)</p>`;
+        html += `<p style="font-size:12px;margin:3px 0;color:#78350f;">This year so far: ₹${inr.format(comp.this_year_so_far)}</p>`;
+        html += `<p style="font-size:13px;margin:8px 0 0;font-weight:700;color:#92400e;">${comp.advice}</p>`;
+      }
+      html += `</div>`;
+      const w = document.createElement("div");
+      w.style.cssText = "display:flex;animation:fadeIn 0.3s ease;";
+      w.innerHTML = html;
+      chat.appendChild(w); chat.scrollTop = chat.scrollHeight;
+    }
+  } catch(e){}
+
+  // Credit score
+  try {
+    const res = await fetch(API + "/api/credit-score");
+    const data = await res.json();
+    if (data.status === "ok") {
+      const pct = Math.round(data.credit_score);
+      const barColor = pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
+      let html = `<div class="credit-card"><h3>Merchant Credit Signal</h3>`;
+      html += `<div class="credit-score-big">${pct}<span style="font-size:16px;opacity:0.6"> / ${data.max_score}</span></div>`;
+      html += `<div class="credit-bar"><div class="credit-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>`;
+      html += `<div class="credit-row"><span>Risk Level</span><span style="font-weight:800">${data.risk_level}</span></div>`;
+      html += `<div class="credit-row"><span>Avg Weekly Revenue</span><span>₹${inr.format(data.avg_weekly_revenue)}</span></div>`;
+      if (data.suggested_loan_limit > 0) {
+        html += `<div class="credit-row"><span>Suggested Loan Limit</span><span style="font-weight:800">₹${inr.format(data.suggested_loan_limit)}</span></div>`;
+      }
+      html += `<p style="font-size:12px;margin:10px 0 4px;opacity:0.85;line-height:1.4;">${data.recommendation}</p>`;
+      html += `<div style="margin-top:8px;border-top:1px solid rgba(255,255,255,0.12);padding-top:8px;">`;
+      const labels = {consistency:"Consistency",growth:"Growth",frequency:"Frequency",adoption:"Adoption",tenure:"Tenure"};
+      for (const [key, comp] of Object.entries(data.components)) {
+        html += `<div class="credit-row"><span>${labels[key]||key} (${Math.round(comp.weight*100)}%)</span><span>${comp.score}/100</span></div>`;
+      }
+      html += `</div></div>`;
+      const w = document.createElement("div");
+      w.style.cssText = "display:flex;animation:fadeIn 0.3s ease;";
+      w.innerHTML = html;
+      chat.appendChild(w); chat.scrollTop = chat.scrollHeight;
+    }
+  } catch(e){}
+}
+
+// ==================== Q&A ====================
 async function askQuestion(text) {
   if (!text.trim()) return;
   addBubble(text, "user");
@@ -586,11 +833,11 @@ async function askQuestion(text) {
     const res = await fetch(API+"/api/ask-text",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:text})});
     const data = await res.json();
     hideTyping();
-    addBubble(data.answer+`<div class="source-tag">🤖 Groq LLM (Llama 3.1 70B) + shop data</div>`,"ai","Sahayak");
+    addBubble(data.answer, "ai", "Sahayak");
     speakText(data.answer);
   } catch(e){
     hideTyping();
-    addBubble("Server se connect nahi ho paya.","ai","Sahayak");
+    addBubble("Connection error. Please try again.", "ai", "Sahayak");
   }
 }
 
@@ -604,7 +851,7 @@ function speakText(text) {
   } catch(e){}
 }
 
-// ---- Voice ----
+// ==================== VOICE ====================
 (function setupVoice() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const mic = document.getElementById("mic");

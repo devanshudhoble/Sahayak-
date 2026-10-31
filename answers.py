@@ -23,11 +23,53 @@ def _credit_answer(credit):
             "This is a prototype signal from your payment history, not a loan offer.")
 
 
+WEEKDAY_WORDS = {
+    "monday": "Monday", "mon": "Monday", "somvar": "Monday",
+    "tuesday": "Tuesday", "tue": "Tuesday", "mangalvar": "Tuesday",
+    "wednesday": "Wednesday", "wed": "Wednesday", "budhvar": "Wednesday",
+    "thursday": "Thursday", "thu": "Thursday", "guruvar": "Thursday",
+    "friday": "Friday", "fri": "Friday", "shukravar": "Friday",
+    "saturday": "Saturday", "sat": "Saturday", "shanivar": "Saturday",
+    "sunday": "Sunday", "sun": "Sunday", "ravivar": "Sunday",
+}
+
+
+def _weekday_in(question):
+    words = question.lower().replace("?", " ").replace(",", " ").split()
+    for w in words:
+        if w in WEEKDAY_WORDS:
+            return WEEKDAY_WORDS[w]
+    return None
+
+
+def _day_line(day, info):
+    """One plain sentence about a single weekday, from the three-week comparison."""
+    pct = round(info["change"] * 100, 1)
+    prior = f"₹{info['prior_avg']:,.0f}"
+    recent = f"₹{info['recent_avg']:,.0f}"
+    if info["change"] <= -0.10 and info["weeks_lower"] >= 2:
+        return (f"{day} collections are down {abs(pct)}% over the last three weeks, "
+                f"from about {prior} to {recent} on average.")
+    sign = "+" if pct >= 0 else ""
+    return (f"{day} is not showing a drop. Collections are {sign}{pct}% against the three weeks "
+            f"before, from about {prior} to {recent} on average.")
+
+
+def _day_summary(per_day):
+    if not per_day:
+        return "none"
+    order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    return "; ".join(_day_line(d, per_day[d]) for d in order if d in per_day)
+
+
 def _keyword_route(question, ctx):
     """Fallback: keyword-based routing when LLM is unavailable."""
     s = question.lower()
     if any(k in s for k in ["credit", "score", "loan", "rating"]):
         return _credit_answer(ctx.get("credit"))
+    day = _weekday_in(question)
+    if day and ctx.get("per_day") and day in ctx["per_day"]:
+        return _day_line(day, ctx["per_day"][day])
     if any(k in s for k in ["why", "down", "decreas", "drop", "kyun", "kyu", "gir", "kam"]):
         return ctx["explanation"]
     if any(k in s for k in ["busy", "peak", "rush", "when", "kab", "samay", "hour"]):
@@ -77,6 +119,7 @@ def answer(question, ctx):
         "suggestion": ctx["suggestion"],
         "decision": ctx["decision"],
         "measure_text": measure_text,
+        "day_summary": _day_summary(ctx.get("per_day")),
     }
 
     # Try LLM first
