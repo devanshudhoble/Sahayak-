@@ -74,6 +74,7 @@ def _context():
         "decision": state["decision"],
         "measure": measure,
         "note": "Sales only. Profit and actual spend are not measured in this prototype.",
+        "credit": compute_credit_signal(state["conn"], SHOP_ID, AS_OF),
     }
 
 
