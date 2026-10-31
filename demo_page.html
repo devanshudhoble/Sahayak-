@@ -1,389 +1,751 @@
-<meta name="claude:viewport-fit-sides" content="cover">
-<title>Sahayak Shop Copilot</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sahayak · Paytm for Business</title>
 <style>
-/* Layout: one column on phones; the shop alert, the test decision and the voice panel stack, and the chart spans the full width. */
 :root {
-  --bg: #f6f7f4;
-  --surface: #ffffff;
-  --fg: #1b2430;
-  --muted: #5b6676;
-  --line: #d9dfd6;
-  --accent: #0e6b5c;
-  --accent-ink: #ffffff;
-  --warn: #8a5300;
-  --warn-bg: #fff1d6;
-  --bar-hist: #b9c4bb;
-  --bar-test: #0e6b5c;
-  color-scheme: light;
+  --paytm-blue: #00BAF2;
+  --paytm-dark: #002970;
+  --bg: #f0f4f8;
+  --white: #ffffff;
+  --fg: #1a1a2e;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --bubble-ai: #ffffff;
+  --bubble-user: #00BAF2;
+  --success: #10b981;
+  --tab-inactive: #9ca3af;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111a17;
-    --surface: #18241f;
-    --fg: #e8efe9;
-    --muted: #9fb0a6;
-    --line: #2b3b34;
-    --accent: #5fd0b8;
-    --accent-ink: #0b1512;
-    --warn: #f0c27a;
-    --warn-bg: #3a2c12;
-    --bar-hist: #3d5149;
-    --bar-test: #5fd0b8;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #111a17;
-  --surface: #18241f;
-  --fg: #e8efe9;
-  --muted: #9fb0a6;
-  --line: #2b3b34;
-  --accent: #5fd0b8;
-  --accent-ink: #0b1512;
-  --warn: #f0c27a;
-  --warn-bg: #3a2c12;
-  --bar-hist: #3d5149;
-  --bar-test: #5fd0b8;
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
 body {
-  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Phone frame */
+.phone {
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  max-height: 820px;
   background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 60px rgba(0,186,242,0.15);
+}
+@media (min-width: 500px) {
+  .phone { border-radius: 32px; height: 92vh; }
+}
+
+/* Status bar */
+.status-bar {
+  background: var(--paytm-dark);
+  color: white;
+  font-size: 11px;
+  padding: 6px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.status-bar .time { font-weight: 600; }
+.status-bar .icons { display: flex; gap: 6px; font-size: 12px; }
+
+/* App header */
+.app-header {
+  background: linear-gradient(135deg, var(--paytm-dark), #003d99);
+  color: white;
+  padding: 12px 16px 10px;
+}
+.app-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-logo .logo-text {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.app-logo .badge {
+  font-size: 10px;
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.app-header .shop-name {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* App tabs */
+.app-tabs {
+  display: flex;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 3px;
+}
+.app-tab {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  transition: all 0.2s;
+  border: none;
+  background: none;
+}
+.app-tab.active {
+  background: var(--paytm-blue);
+  color: white;
+}
+
+/* Chat area */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+/* Soundbox indicator */
+.soundbox-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e8f8fe;
+  border: 1px solid #b3e8fb;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--paytm-dark);
+  animation: fadeIn 0.3s ease;
+}
+.soundbox-bar .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  animation: blink 2s infinite;
+}
+
+/* Chat bubbles */
+.bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.45;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.bubble.ai {
+  background: var(--bubble-ai);
   color: var(--fg);
-  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 15px;
-  line-height: 1.55;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-top: 20px;
-  padding-bottom: 40px;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
-.wrap { max-width: 880px; margin: 0 auto; display: grid; gap: 16px; min-width: 0; }
-h1, h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 600; text-wrap: balance; margin: 0; }
-h1 { font-size: 28px; line-height: 1.2; }
-h2 { font-size: 18px; }
-.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
-.muted { color: var(--muted); }
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
+.bubble.user {
+  background: var(--bubble-user);
+  color: white;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+.bubble .label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 3px;
+  color: var(--paytm-blue);
+}
+.bubble.user .label { color: rgba(255,255,255,0.7); }
+.bubble .source-tag {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Action buttons */
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.action-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--paytm-blue);
+  border-radius: 20px;
+  padding: 7px 16px;
+  background: var(--paytm-blue);
+  color: white;
+  transition: all 0.2s;
+}
+.action-btn:hover { background: var(--paytm-dark); border-color: var(--paytm-dark); }
+.action-btn.ghost { background: transparent; color: var(--paytm-blue); }
+.action-btn.ghost:hover { background: var(--paytm-blue); color: white; }
+.action-btn:disabled { opacity: 0.4; cursor: default; }
+
+.budget-row {
+  display: flex; gap: 6px; align-items: center; margin-top: 6px;
+}
+.budget-row input {
+  font: inherit; font-size: 13px;
+  border: 2px solid var(--border); border-radius: 10px;
+  padding: 6px 10px; width: 100px;
+  background: var(--bg); color: var(--fg);
+}
+.budget-row input:focus { border-color: var(--paytm-blue); outline: none; }
+
+/* Measure card */
+.measure-card {
+  background: var(--white);
   border-radius: 14px;
-  padding: 18px;
-  min-width: 0;
+  padding: 12px 14px;
+  max-width: 82%;
+  align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  animation: fadeIn 0.3s ease;
+  border-left: 3px solid var(--success);
 }
-.grid2 { display: grid; gap: 16px; grid-template-columns: 1fr; min-width: 0; }
-@media (min-width: 720px) { .grid2 { grid-template-columns: 1fr 1fr; } }
-.pill {
-  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
-  background: var(--warn-bg); color: var(--warn);
+.measure-card h3 { font-size: 13px; color: var(--success); font-weight: 700; margin-bottom: 6px; }
+.measure-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }
+.measure-row .val { font-weight: 700; }
+
+/* Suggestion chips */
+.chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  max-width: 88%; align-self: flex-start;
+  animation: fadeIn 0.3s ease;
 }
-.pill.ok { background: var(--accent); color: var(--accent-ink); }
-.explain { font-size: 16px; margin: 10px 0 0; }
-.btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-button, .btn {
-  font: inherit; font-weight: 600; cursor: pointer;
-  border-radius: 10px; padding: 10px 16px; border: 1px solid var(--accent);
-  background: var(--accent); color: var(--accent-ink);
+.chip {
+  font: inherit; font-size: 12px;
+  cursor: pointer;
+  border: 1.5px solid var(--paytm-blue);
+  border-radius: 16px;
+  padding: 5px 12px;
+  background: var(--white);
+  color: var(--paytm-blue);
+  transition: all 0.2s;
 }
-button.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
-button:disabled { opacity: 0.45; cursor: default; }
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-input, select {
-  font: inherit; color: var(--fg); background: var(--bg);
-  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0;
+.chip:hover { background: var(--paytm-blue); color: white; }
+
+/* Input bar */
+.input-bar {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 8px 12px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
-input[type="number"] { width: 130px; }
-input.text { flex: 1 1 200px; }
-.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.chart { width: 100%; height: auto; display: block; margin-top: 10px; }
-.kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 12px 0 0; }
-.kv dt { color: var(--muted); }
-.kv dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
-.answer {
-  margin-top: 12px; padding: 12px 14px; border-radius: 10px;
-  background: var(--bg); border: 1px solid var(--line); min-height: 52px;
+.input-bar select {
+  font: inherit; font-size: 11px;
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 6px 8px; background: var(--bg); color: var(--fg); cursor: pointer;
 }
-.caution { font-size: 13px; color: var(--warn); margin: 10px 0 0; }
-.error { color: var(--warn); font-size: 13px; margin: 6px 0 0; min-height: 1em; }
-.footer { font-size: 12px; color: var(--muted); }
+.input-bar input {
+  flex: 1; font: inherit; font-size: 14px;
+  border: 2px solid var(--border); border-radius: 20px;
+  padding: 8px 14px; background: var(--bg); color: var(--fg);
+}
+.input-bar input:focus { border-color: var(--paytm-blue); outline: none; }
+.mic-btn, .send-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: none; background: var(--paytm-blue); color: white;
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.2s;
+}
+.mic-btn:hover, .send-btn:hover { background: var(--paytm-dark); }
+.mic-btn.listening { background: #ef4444; animation: pulse 1s infinite; }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+
+/* Bottom nav */
+.bottom-nav {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 6px 0 10px;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--tab-inactive);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 4px 0;
+}
+.nav-item.active { color: var(--paytm-blue); }
+.nav-item .nav-icon { font-size: 18px; }
+.nav-item .nav-label { font-weight: 600; }
+
+/* Typing */
+.typing { display: flex; gap: 3px; padding: 6px 14px; }
+.typing span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted); opacity: 0.4;
+  animation: blink 1.4s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* Category selector */
+.cat-selector {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
+}
+.cat-btn {
+  font: inherit; font-size: 11px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--paytm-blue);
+  border-radius: 14px; padding: 5px 10px;
+  background: var(--white); color: var(--paytm-blue); transition: all 0.2s;
+}
+.cat-btn:hover, .cat-btn.active { background: var(--paytm-blue); color: white; }
+
+/* Festival card */
+.festival-card {
+  background: linear-gradient(135deg, #fff7ed, #fef3c7);
+  border-radius: 14px; padding: 12px 14px;
+  max-width: 82%; align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  animation: fadeIn 0.3s ease;
+  border-left: 3px solid #f59e0b;
+}
+.festival-card h3 { font-size: 13px; color: #b45309; font-weight: 700; margin-bottom: 4px; }
+
+/* Credit card */
+.credit-card {
+  background: linear-gradient(135deg, #002970, #00BAF2);
+  border-radius: 14px; padding: 14px;
+  max-width: 82%; align-self: flex-start;
+  color: white; animation: fadeIn 0.3s ease;
+}
+.credit-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; opacity: 0.9; }
+.credit-score-big { font-size: 36px; font-weight: 800; text-align: center; margin: 8px 0; }
+.credit-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); margin: 8px 0; }
+.credit-bar-fill { height: 100%; border-radius: 3px; background: #10b981; }
+.credit-row { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; opacity: 0.9; }
+
+.footer-note {
+  text-align: center; font-size: 9px;
+  color: var(--muted); padding: 4px; background: var(--bg);
+}
+
 [hidden] { display: none !important; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
+</head>
+<body>
 
-<main class="wrap">
-  <header>
-    <div class="eyebrow">Sahayak demo · one shop · synthetic data</div>
-    <h1>Sunita's kirana, Thursday sales</h1>
-    <p class="muted" style="margin:6px 0 0">Sahayak notices a change, explains what the data shows, suggests one small test, and waits for your approval. All figures are synthetic.</p>
-  </header>
+<div class="phone">
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="time" id="clock">12:30</span>
+    <span class="icons">📶 🔋</span>
+  </div>
 
-  <section class="card" aria-labelledby="h-notice">
-    <div class="row" style="justify-content:space-between">
-      <h2 id="h-notice">1. Notice and explain</h2>
-      <span class="pill">Alert</span>
+  <!-- App header -->
+  <div class="app-header">
+    <div class="app-header-top">
+      <div class="app-logo">
+        <span class="logo-text">Paytm Business</span>
+        <span class="badge">for Merchants</span>
+      </div>
     </div>
-    <p class="explain" id="explain"></p>
-    <p class="muted" style="margin:12px 0 0" id="peak"></p>
-    <svg class="chart" id="chart" role="img" aria-labelledby="chart-title"></svg>
-    <p class="footer" id="chart-title" style="margin:6px 0 0">Thursday collections, nine weeks. Grey: six weeks of history. Green: the test period (simulated).</p>
-  </section>
+    <div class="app-tabs">
+      <button class="app-tab" onclick="switchTab('home')">🏠 Home</button>
+      <button class="app-tab" onclick="switchTab('payments')">💳 Payments</button>
+      <button class="app-tab active" id="tab-sahayak" onclick="switchTab('sahayak')">🤖 Sahayak</button>
+      <button class="app-tab" onclick="switchTab('account')">👤 Account</button>
+    </div>
+  </div>
 
-  <section class="card" aria-labelledby="h-decide">
-    <div class="row" style="justify-content:space-between">
-      <h2 id="h-decide">2. Suggest and decide</h2>
-      <span class="pill" id="status">Waiting for you</span>
-    </div>
-    <p class="explain" id="suggestion"></p>
-    <div class="btns" id="decide-btns">
-      <button id="approve">Approve</button>
-      <button class="ghost" id="change">Change budget</button>
-      <button class="ghost" id="skip">Skip</button>
-    </div>
-    <div class="row" id="change-row" hidden style="margin-top:12px">
-      <label for="cap">Budget (₹, max 1,500)</label>
-      <input id="cap" type="number" min="100" max="1500" step="100" value="1000">
-      <button id="apply-cap">Apply</button>
-    </div>
-    <p class="error" id="cap-error" role="alert"></p>
-  </section>
+  <!-- Soundbox connection indicator -->
+  <div class="soundbox-bar">
+    <span class="dot"></span>
+    <span>🔊 Soundbox connected · Voice active · Will speak insights aloud</span>
+  </div>
 
-  <section class="card" id="measure-card" aria-labelledby="h-measure" hidden>
-    <div class="row" style="justify-content:space-between">
-      <h2 id="h-measure">3. Measure</h2>
-      <span class="pill ok">Result</span>
-    </div>
-    <dl class="kv" id="measure-kv"></dl>
-    <p class="caution" id="measure-caution"></p>
-  </section>
+  <!-- Chat -->
+  <div class="chat-area" id="chat"></div>
 
-  <section class="card" aria-labelledby="h-ask">
-    <h2 id="h-ask">4. Ask Sahayak</h2>
-    <p class="muted" style="margin:6px 0 0">Ask by voice or type. Answers come from the same numbers above. Sahayak only answers the questions it can check against the data.</p>
-    <div class="row" style="margin-top:12px">
-      <select id="lang" aria-label="Speech language">
-        <option value="en-IN">English (India)</option>
-        <option value="hi-IN">Hindi</option>
-      </select>
-      <button id="mic">Ask by voice</button>
-      <span class="muted" id="voice-note" style="font-size:13px"></span>
-    </div>
-    <div class="row" style="margin-top:10px">
-      <input class="text" id="q" type="text" placeholder="e.g. Why are Thursday sales down?" aria-label="Your question">
-      <button class="ghost" id="ask">Ask</button>
-    </div>
-    <div class="answer" id="answer" aria-live="polite">Try: "Why are Thursday sales down?", "When is my busiest time?", "What should I try?", "How did the test do?"</div>
-    <div class="row" style="margin-top:8px"><button class="ghost" id="speak" hidden>Read answer aloud</button></div>
-  </section>
+  <!-- Input bar -->
+  <div class="input-bar">
+    <select id="lang"><option value="en-IN">EN</option><option value="hi-IN">HI</option></select>
+    <input id="q" type="text" placeholder="Ask Sahayak..." aria-label="Your question">
+    <button class="mic-btn" id="mic" title="Voice">🎤</button>
+    <button class="send-btn" id="send" title="Send">➤</button>
+  </div>
 
-  <p class="footer">Prototype. Soundbox and WhatsApp are mocked. Not affiliated with or endorsed by Paytm. Sales only: profit and actual spend are not measured. The test result is simulated, so it shows how the flow works, not real evidence. Voice input works in Chrome and Edge; answers are in English.</p>
-</main>
+  <!-- Bottom nav -->
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="switchTab('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" onclick="switchTab('payments')"><span class="nav-icon">💳</span><span class="nav-label">Payments</span></button>
+    <button class="nav-item active" id="nav-sahayak"><span class="nav-icon">🤖</span><span class="nav-label">Sahayak</span></button>
+    <button class="nav-item" onclick="switchTab('account')"><span class="nav-icon">👤</span><span class="nav-label">Account</span></button>
+  </div>
+
+  <div class="footer-note">
+    Prototype · Synthetic data · Not affiliated with Paytm · <a href="/docs" style="color:var(--paytm-blue)">API</a>
+  </div>
+</div>
 
 <script>
-const D = {
-  explanation: "Thursday collections are down 15% over the last three weeks, compared with the three weeks before. Other weekdays are within 8% of their usual level, so the drop is specific to Thursdays. The data shows the drop, not the cause. Did your Thursday opening hours, stock or staffing change?",
-  peak: [[20, 29834], [19, 27743]],
-  suggestionBase: "Try a tea-and-snacks bundle offer on Thursdays for three weeks.",
-  cap: 1000,
-  maxCap: 1500,
-  measure: { baseline: 8729, test: 10400, change: 19.1,
-             note: "Sales only. Profit and actual spend are not measured in this prototype." },
-  thursdays: [
-    ["2026-09-10", 10637], ["2026-09-17", 10420], ["2026-09-24", 9623],
-    ["2026-10-01", 8664], ["2026-10-08", 9046], ["2026-10-15", 8476],
-    ["2026-10-22", 9335], ["2026-10-29", 10603], ["2026-11-05", 11261]
-  ],
-  testStart: "2026-10-19"
+const API = "";
+const inr = new Intl.NumberFormat("en-IN");
+const chat = document.getElementById("chat");
+let S = {};
+
+// Clock
+function updateClock() {
+  const now = new Date();
+  document.getElementById("clock").textContent =
+    now.getHours().toString().padStart(2, "0") + ":" + now.getMinutes().toString().padStart(2, "0");
+}
+updateClock(); setInterval(updateClock, 30000);
+
+function switchTab(t) {
+  if (t !== "sahayak") {
+    alert("This is a prototype — only the Sahayak tab is active.");
+  }
+}
+
+function hourLabel(h) { return (h % 12 || 12) + (h >= 12 ? " pm" : " am"); }
+
+function addBubble(text, type, extra) {
+  const div = document.createElement("div");
+  if (type === "ai") {
+    div.className = "bubble ai";
+    div.innerHTML = (extra ? `<div class="label">${extra}</div>` : "") + text;
+  } else if (type === "user") {
+    div.className = "bubble user";
+    div.innerHTML = `<div class="label">You</div>` + text;
+  } else if (type === "measure") {
+    div.className = "measure-card";
+    div.innerHTML = text;
+  }
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function addChips(chips) {
+  const div = document.createElement("div");
+  div.className = "chips";
+  chips.forEach(c => {
+    const btn = document.createElement("button");
+    btn.className = "chip";
+    btn.textContent = c;
+    btn.onclick = () => { div.remove(); askQuestion(c); };
+    div.appendChild(btn);
+  });
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const div = document.createElement("div");
+  div.className = "bubble ai"; div.id = "typing";
+  div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+function hideTyping() { const el = document.getElementById("typing"); if (el) el.remove(); }
+
+// ---- Fetch real data and start ----
+async function init() {
+  try {
+    const res = await fetch(API + "/api/status");
+    S = await res.json();
+  } catch (e) {
+    addBubble("Server not connected. Run start.bat first.", "ai", "Sahayak");
+    return;
+  }
+  startConversation();
+}
+
+function startConversation() {
+  const day = S.weak_weekday || "Thursday";
+  const pct = S.drop_pct || 15;
+
+  setTimeout(() => {
+    addBubble("Namaste Sunita ji! 🙏 Main aapka Sahayak hoon — aapke Soundbox se juda.", "ai", "Sahayak");
+    setTimeout(() => {
+      addBubble(
+        `Aapki <strong>${day}</strong> ki sales mein <strong>${pct}%</strong> ki giravat aayi hai pichhle 3 hafton mein.` +
+        `<div class="source-tag">📊 trend.py → weekday comparison from Paytm transactions</div>`, "ai"
+      );
+      setTimeout(() => {
+        addBubble(
+          S.explanation +
+          `<div class="source-tag">📊 explainer.py → plain-language insight</div>`, "ai"
+        );
+        setTimeout(() => {
+          if (S.peak_hours && S.peak_hours.length >= 2) {
+            addBubble(
+              `Sabse zyada business: <strong>${hourLabel(S.peak_hours[0][0])}</strong> (₹${inr.format(S.peak_hours[0][1])}) aur <strong>${hourLabel(S.peak_hours[1][0])}</strong> (₹${inr.format(S.peak_hours[1][1])}).` +
+              `<div class="source-tag">📊 SQLite → top hours by SUM(amount)</div>`, "ai"
+            );
+          }
+          setTimeout(() => showSuggestion(), 700);
+        }, 700);
+      }, 900);
+    }, 900);
+  }, 400);
+}
+
+function showSuggestion() {
+  addBubble(
+    `💡 <strong>${S.suggestion}</strong><br><br>Bina aapki ijazat ke kuch nahi hoga.` +
+    `<div class="source-tag">📊 planner.py → capped experiment</div>` +
+    `<div class="action-row">` +
+    `<button class="action-btn" onclick="decide('approve')">✅ Haan</button>` +
+    `<button class="action-btn ghost" onclick="showBudgetChange()">💰 Budget</button>` +
+    `<button class="action-btn ghost" onclick="decide('skip')">Nahi</button>` +
+    `</div>` +
+    `<div class="budget-row" id="budget-row" hidden>` +
+    `<input type="number" id="cap-input" min="100" max="${S.max_cap||1500}" step="100" value="${S.cap}" placeholder="₹">` +
+    `<button class="action-btn" onclick="applyBudget()">Set</button>` +
+    `</div>`, "ai", "Your decision"
+  );
+  setTimeout(() => {
+    addChips([
+      `Why are ${S.weak_weekday||'Thursday'} sales down?`,
+      "Sabse busy time kab hai?",
+      "Kya try karun?",
+      "Aaj kitna kamaya?"
+    ]);
+    // Phase 2: load category selector, festival alert, credit score
+    setTimeout(() => loadPhase2(), 600);
+  }, 500);
+}
+
+window.showBudgetChange = function() {
+  document.getElementById("budget-row").hidden = false;
+  document.getElementById("cap-input").focus();
+};
+window.applyBudget = function() {
+  const v = Number(document.getElementById("cap-input").value);
+  if (!v || v < 100) return alert("Min ₹100");
+  if (v > (S.max_cap||1500)) return alert(`Max ₹${inr.format(S.max_cap||1500)}`);
+  S.cap = v;
+  decide("change");
 };
 
-const inr = new Intl.NumberFormat("en-IN");
-const state = { decision: null, cap: D.cap };
-const $ = (id) => document.getElementById(id);
+window.decide = async function(d) {
+  document.querySelectorAll(".action-btn").forEach(b => b.disabled = true);
+  const br = document.getElementById("budget-row"); if (br) br.remove();
 
-function hourLabel(h) {
-  const suffix = h >= 12 ? "pm" : "am";
-  const h12 = h % 12 === 0 ? 12 : h % 12;
-  return h12 + " " + suffix;
-}
-
-function suggestionText() {
-  return D.suggestionBase + " Maximum budget ₹" + inr.format(state.cap) + ".";
-}
-
-function resultText() {
-  const m = D.measure;
-  return "Thursdays averaged ₹" + inr.format(m.test) + " during the test, against ₹" +
-    inr.format(m.baseline) + " in the three weeks before (" + (m.change >= 0 ? "+" : "") + m.change + "%).";
-}
-
-function drawChart() {
-  const svg = $("chart");
-  const W = 600, H = 230, padL = 56, padB = 34, padT = 12;
-  const max = 12000;
-  const plotW = W - padL - 8, plotH = H - padB - padT;
-  const n = D.thursdays.length, slot = plotW / n, bw = slot * 0.6;
-  const NS = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
-  svg.textContent = "";
-  const el = (tag, attrs) => {
-    const e = document.createElementNS(NS, tag);
-    for (const k in attrs) e.setAttribute(k, attrs[k]);
-    return e;
-  };
-  [0, 4000, 8000, 12000].forEach((v) => {
-    const y = padT + plotH - (v / max) * plotH;
-    svg.appendChild(el("line", { x1: padL, x2: W - 8, y1: y, y2: y, stroke: "var(--line)", "stroke-width": 1 }));
-    const t = el("text", { x: padL - 8, y: y + 4, "text-anchor": "end", fill: "var(--muted)", "font-size": 11 });
-    t.textContent = "₹" + inr.format(v / 1000) + "k";
-    svg.appendChild(t);
-  });
-  D.thursdays.forEach(([date, amount], i) => {
-    const x = padL + i * slot + (slot - bw) / 2;
-    const h = (amount / max) * plotH;
-    const isTest = date >= D.testStart;
-    svg.appendChild(el("rect", {
-      x, y: padT + plotH - h, width: bw, height: h, rx: 4,
-      fill: isTest ? "var(--bar-test)" : "var(--bar-hist)"
-    }));
-    const d = new Date(date + "T00:00:00");
-    const t = el("text", { x: x + bw / 2, y: H - 12, "text-anchor": "middle", fill: "var(--muted)", "font-size": 11 });
-    t.textContent = d.getDate() + " " + d.toLocaleString("en-GB", { month: "short" });
-    svg.appendChild(t);
-  });
-}
-
-function setStatus(text, ok) {
-  const p = $("status");
-  p.textContent = text;
-  p.className = ok ? "pill ok" : "pill";
-}
-
-function setDecided(decision) {
-  state.decision = decision;
-  ["approve", "change", "skip"].forEach((id) => { $(id).disabled = true; });
-  $("change-row").hidden = true;
-  if (decision === "skipped") {
-    setStatus("Skipped", false);
-    $("suggestion").textContent = suggestionText() + " You skipped this. Nothing runs and nothing is measured.";
-    $("measure-card").hidden = true;
+  if (d === "skip") {
+    addBubble("Nahi, abhi nahi.", "user");
+    fetch(API+"/api/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision:"skip"})}).catch(()=>{});
+    S.decision = "skipped";
+    setTimeout(()=> addBubble("Koi baat nahi! Main data dekhta rahunga. Jab zaroorat ho, pooch lena. 👍","ai","Sahayak"), 500);
   } else {
-    setStatus("Approved, test running", true);
-    $("suggestion").textContent = suggestionText() + " Approved by you.";
-    $("measure-card").hidden = false;
-    renderMeasure();
+    const cap = d==="change" ? S.cap : (S.cap||1000);
+    addBubble(d==="change" ? `Haan, ₹${inr.format(cap)} budget se chalao` : "Haan, chalao! 👍","user");
+    try {
+      const res = await fetch(API+"/api/decision",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({decision:d==="change"?"change":"approve",cap:d==="change"?cap:null})});
+      const data = await res.json();
+      S.decision = data.decision; S.cap = data.cap;
+    } catch(e){}
+    setTimeout(()=>{
+      addBubble("Chaliye! Test shuru ho gaya. 3 hafton mein result bataunga. ✅","ai","Sahayak");
+      setTimeout(()=> fetchMeasure(), 1000);
+    }, 500);
+  }
+};
+
+async function fetchMeasure() {
+  try {
+    const res = await fetch(API+"/api/status");
+    const data = await res.json();
+    if (data.measure) {
+      const m = data.measure;
+      const sign = m.change_pct >= 0 ? "+" : "";
+      addBubble(
+        `<h3>📈 Test Result</h3>`+
+        `<div class="measure-row"><span>${S.weak_weekday||'Thursday'} avg (test)</span><span class="val">₹${inr.format(m.test_avg)}</span></div>`+
+        `<div class="measure-row"><span>${S.weak_weekday||'Thursday'} avg (before)</span><span class="val">₹${inr.format(m.baseline_avg)}</span></div>`+
+        `<div class="measure-row"><span>Change</span><span class="val" style="color:${m.change_pct>=0?'var(--success)':'#ef4444'}">${sign}${m.change_pct}%</span></div>`+
+        `<div class="source-tag">📊 planner.py → measure() from DB</div>`, "measure"
+      );
+      setTimeout(()=> addBubble(`${m.change_pct>=0?'Badhai ho':'Hmm'}! ${S.weak_weekday||'Thursday'} sales mein <strong>${sign}${m.change_pct}%</strong> ka change aaya. ${m.note}`,"ai","Sahayak"), 700);
+    } else {
+      addBubble("Test period complete hone par result bataunga.","ai","Sahayak");
+    }
+  } catch(e){ addBubble("Result baad mein check karna.","ai","Sahayak"); }
+}
+
+// ---- Phase 2: Category, Festival, Credit ----
+async function loadPhase2() {
+  // 1. Category selector
+  try {
+    const res = await fetch(API + "/api/categories");
+    const data = await res.json();
+    const cats = data.categories;
+    const cur = data.current;
+    let html = `🏪 Aapki dukaan ka type: <strong>${S.category_label||'Kirana Store'}</strong><br><small>Tap to change — suggestions will update for your shop type:</small>` +
+      `<div class="cat-selector">`;
+    cats.forEach(c => {
+      html += `<button class="cat-btn${c.id===cur?' active':''}" data-cat="${c.id}">${c.label}</button>`;
+    });
+    html += `</div><div class="source-tag">🏪 merchant_types.py → 6 shop categories</div>`;
+    const bub = addBubble(html, "ai", "Multi-Merchant Intelligence");
+    bub.querySelectorAll(".cat-btn").forEach(btn => {
+      btn.onclick = async () => {
+        const catId = btn.dataset.cat;
+        bub.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        try {
+          await fetch(API+"/api/category",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({category:catId})});
+          const st = await (await fetch(API+"/api/status")).json();
+          S = st;
+          addBubble(`✅ Category changed to <strong>${st.category_label}</strong>.<br>New suggestion: <strong>${st.suggestion}</strong>`, "ai", "Sahayak");
+        } catch(e){ addBubble("Category update failed.","ai","Sahayak"); }
+      };
+    });
+  } catch(e){}
+
+  // 2. Festival alert
+  try {
+    const res = await fetch(API + "/api/festival");
+    const data = await res.json();
+    if (data.upcoming) {
+      const f = data.upcoming;
+      const comp = data.comparison;
+      let html = `<div class="festival-card"><h3>🎉 ${f.name} — ${f.days_until} din baaki!</h3>`;
+      html += `<p style="font-size:12px;margin:4px 0;">Date: ${f.date}</p>`;
+      if (comp) {
+        html += `<p style="font-size:12px;margin:4px 0;">Last year estimated: ₹${inr.format(comp.last_year_estimated_total)} (${comp.multiplier}x normal)</p>`;
+        html += `<p style="font-size:12px;margin:4px 0;">This year so far: ₹${inr.format(comp.this_year_so_far)}</p>`;
+        html += `<p style="font-size:12px;margin:6px 0;font-weight:600;color:#b45309;">💡 ${comp.advice}</p>`;
+      }
+      html += `<div class="source-tag" style="margin-top:6px;">📅 festivals.py → 15 Indian festivals + YoY comparison</div></div>`;
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = "display:flex;animation:fadeIn 0.3s ease;";
+      wrapper.innerHTML = html;
+      chat.appendChild(wrapper);
+      chat.scrollTop = chat.scrollHeight;
+    }
+  } catch(e){}
+
+  // 3. Credit score
+  try {
+    const res = await fetch(API + "/api/credit-score");
+    const data = await res.json();
+    if (data.status === "ok") {
+      const pct = Math.round(data.credit_score);
+      const barColor = pct >= 75 ? "#10b981" : pct >= 50 ? "#f59e0b" : "#ef4444";
+      let html = `<div class="credit-card"><h3>💳 Paytm Merchant Credit Signal</h3>`;
+      html += `<div class="credit-score-big">${pct}<span style="font-size:16px;opacity:0.7"> / ${data.max_score}</span></div>`;
+      html += `<div class="credit-bar"><div class="credit-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>`;
+      html += `<div class="credit-row"><span>Risk Level</span><span style="font-weight:700">${data.risk_level}</span></div>`;
+      html += `<div class="credit-row"><span>Avg Weekly Revenue</span><span>₹${inr.format(data.avg_weekly_revenue)}</span></div>`;
+      if (data.suggested_loan_limit > 0) {
+        html += `<div class="credit-row"><span>Suggested Loan Limit</span><span style="font-weight:700">₹${inr.format(data.suggested_loan_limit)}</span></div>`;
+      }
+      html += `<p style="font-size:11px;margin:8px 0 2px;opacity:0.85;">📝 ${data.recommendation}</p>`;
+      // Components breakdown
+      html += `<div style="margin-top:8px;border-top:1px solid rgba(255,255,255,0.15);padding-top:6px;">`;
+      for (const [key, comp] of Object.entries(data.components)) {
+        html += `<div class="credit-row"><span>${key} (${Math.round(comp.weight*100)}%)</span><span>${comp.score}/100</span></div>`;
+      }
+      html += `</div>`;
+      html += `<div class="source-tag" style="color:rgba(255,255,255,0.6);margin-top:6px;">📊 credit_score.py → 5-component weighted scoring</div></div>`;
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = "display:flex;animation:fadeIn 0.3s ease;";
+      wrapper.innerHTML = html;
+      chat.appendChild(wrapper);
+      chat.scrollTop = chat.scrollHeight;
+    }
+  } catch(e){}
+}
+
+// ---- Q&A ----
+async function askQuestion(text) {
+  if (!text.trim()) return;
+  addBubble(text, "user");
+  document.getElementById("q").value = "";
+  showTyping();
+  try {
+    const res = await fetch(API+"/api/ask-text",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:text})});
+    const data = await res.json();
+    hideTyping();
+    addBubble(data.answer+`<div class="source-tag">🤖 Groq LLM (Llama 3.1 70B) + shop data</div>`,"ai","Sahayak");
+    speakText(data.answer);
+  } catch(e){
+    hideTyping();
+    addBubble("Server se connect nahi ho paya.","ai","Sahayak");
   }
 }
 
-function renderMeasure() {
-  const m = D.measure;
-  const kv = $("measure-kv");
-  kv.textContent = "";
-  [["Thursday average during test", "₹" + inr.format(m.test)],
-   ["Thursday average before", "₹" + inr.format(m.baseline)],
-   ["Change", (m.change >= 0 ? "+" : "") + m.change + "%"],
-   ["Budget cap", "₹" + inr.format(state.cap)]].forEach(([k, v]) => {
-    const dt = document.createElement("dt"); dt.textContent = k;
-    const dd = document.createElement("dd"); dd.textContent = v;
-    kv.appendChild(dt); kv.appendChild(dd);
-  });
-  $("measure-caution").textContent = "Test figures are simulated in this demo. " + m.note;
-}
-
-function route(question) {
-  const s = question.toLowerCase();
-  if (/why|down|decreas|drop|kyun|kyu|gir|kam/.test(s)) return D.explanation;
-  if (/busy|peak|rush|busiest|when|kab|samay|hour/.test(s)) {
-    const [h1] = D.peak;
-    return "Your busiest hours in the last three weeks are " + hourLabel(D.peak[0][0]) +
-      " and " + hourLabel(D.peak[1][0]) + ", in that order.";
-  }
-  if (/result|measure|how did|worked|test/.test(s)) {
-    if (state.decision === "approved") return resultText() + " " + D.measure.note;
-    if (state.decision === "skipped") return "You skipped the test, so there is no result.";
-    return "No test has been approved yet, so there is no result.";
-  }
-  if (/try|suggest|should|idea|what.*do|kya/.test(s)) {
-    return suggestionText() + " Nothing runs until you approve it.";
-  }
-  return "I can't answer that from your data yet. Ask about why Thursday sales fell, your busiest time, a suggested test, or the test result.";
-}
-
-function answer(question) {
-  const text = route(question);
-  $("answer").textContent = text;
-  $("speak").hidden = false;
-  speak(text);
-}
-
-function speak(text) {
+function speakText(text) {
   try {
     if (!("speechSynthesis" in window)) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = $("lang").value === "hi-IN" ? "hi-IN" : "en-IN";
+    u.lang = document.getElementById("lang").value;
     speechSynthesis.speak(u);
-  } catch (e) { /* speech is optional; the text answer is always shown */ }
+  } catch(e){}
 }
 
-function setupVoice() {
+// ---- Voice ----
+(function setupVoice() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    $("mic").disabled = true;
-    $("voice-note").textContent = "Voice input needs Chrome or Edge. Type your question instead.";
-    return;
-  }
+  const mic = document.getElementById("mic");
+  if (!SR) { mic.title = "Voice needs Chrome/Edge"; return; }
   const rec = new SR();
-  rec.continuous = false;
-  rec.interimResults = false;
-  rec.onresult = (e) => {
-    const said = e.results[0][0].transcript;
-    $("q").value = said;
-    answer(said);
+  rec.continuous = false; rec.interimResults = false;
+  rec.onresult = (e) => { askQuestion(e.results[0][0].transcript); };
+  rec.onerror = rec.onend = () => { mic.className="mic-btn"; mic.textContent="🎤"; };
+  mic.onclick = () => {
+    rec.lang = document.getElementById("lang").value;
+    mic.className="mic-btn listening"; mic.textContent="⏺";
+    try { rec.start(); } catch(e){}
   };
-  rec.onerror = (e) => {
-    $("voice-note").textContent = e.error === "not-allowed"
-      ? "Microphone permission was blocked. You can type your question."
-      : "Could not hear that. Try again or type your question.";
-  };
-  rec.onend = () => { $("mic").textContent = "Ask by voice"; };
-  $("mic").addEventListener("click", () => {
-    rec.lang = $("lang").value;
-    $("voice-note").textContent = "Listening…";
-    $("mic").textContent = "Listening…";
-    try { rec.start(); } catch (e) { $("voice-note").textContent = "Already listening."; }
-  });
-}
+})();
 
-function init() {
-  $("explain").textContent = D.explanation;
-  $("peak").textContent = "Busiest hours in the last three weeks: " +
-    hourLabel(D.peak[0][0]) + " and " + hourLabel(D.peak[1][0]) + ".";
-  $("suggestion").textContent = suggestionText();
-  drawChart();
-
-  $("approve").addEventListener("click", () => setDecided("approved"));
-  $("skip").addEventListener("click", () => setDecided("skipped"));
-  $("change").addEventListener("click", () => {
-    $("change-row").hidden = !$("change-row").hidden;
-    $("cap").focus();
-  });
-  $("apply-cap").addEventListener("click", () => {
-    const v = Number($("cap").value);
-    if (!Number.isFinite(v) || v < 100) { $("cap-error").textContent = "Enter at least ₹100."; return; }
-    if (v > D.maxCap) { $("cap-error").textContent = "The maximum is ₹1,500 by rule."; return; }
-    $("cap-error").textContent = "";
-    state.cap = v;
-    setDecided("approved");
-  });
-
-  $("ask").addEventListener("click", () => {
-    const q = $("q").value.trim();
-    if (q) answer(q);
-  });
-  $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") $("ask").click(); });
-  $("speak").addEventListener("click", () => speak($("answer").textContent));
-  setupVoice();
-}
-
+document.getElementById("send").onclick = () => askQuestion(document.getElementById("q").value);
+document.getElementById("q").onkeydown = (e) => { if(e.key==="Enter") askQuestion(document.getElementById("q").value); };
 init();
 </script>
+</body>
+</html>

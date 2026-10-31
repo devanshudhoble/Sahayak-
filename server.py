@@ -12,8 +12,11 @@ from pydantic import BaseModel
 import planner
 import sarvam
 from answers import answer
+from credit_score import compute_credit_signal
 from data_gen import SHOP_ID, START, generate
 from explainer import explain
+from festivals import festive_comparison, upcoming_festival
+from merchant_types import get_suggestion, list_categories, get_category_label
 from trend import detect
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +33,8 @@ async def lifespan(app):
     planner.init(conn)
     finding = detect(conn, SHOP_ID, AS_OF)
     action = planner.propose(conn, SHOP_ID, finding, AS_OF)
-    state.update(conn=conn, finding=finding, action=action, decision=None, cap=action["budget_cap"])
+    state.update(conn=conn, finding=finding, action=action, decision=None, cap=action["budget_cap"],
+                 category="kirana")  # default shop category
     yield
     conn.close()
 
@@ -76,7 +80,27 @@ class Decision(BaseModel):
 
 @app.get("/api/status")
 def status():
-    return {"decision": state["decision"], "cap": state["cap"], "explanation": explain(state["finding"])}
+    f = state["finding"]
+    measure = None
+    if state["decision"] == "approved":
+        m = planner.measure(state["conn"], SHOP_ID, state["action"]["id"])
+        if not isinstance(m, str):
+            measure = m
+    weak_day = f["flagged"][0]["weekday"] if f.get("flagged") else "Thursday"
+    suggestion = get_suggestion(state["category"], weak_day, state["cap"])
+    return {
+        "decision": state["decision"],
+        "cap": state["cap"],
+        "max_cap": planner.MAX_CAP,
+        "explanation": explain(f),
+        "peak_hours": f["peak_hours"],
+        "suggestion": suggestion,
+        "measure": measure,
+        "weak_weekday": weak_day,
+        "drop_pct": round(abs(f["flagged"][0]["change"]) * 100, 1) if f.get("flagged") else 0,
+        "category": state["category"],
+        "category_label": get_category_label(state["category"]),
+    }
 
 
 @app.post("/api/decision")
@@ -116,3 +140,36 @@ async def ask_voice(audio: UploadFile = File(...)):
         raise HTTPException(502, f"Sarvam request failed: {e}")
     return {"transcript": transcript, "answer": text,
             "audio_wav_base64": base64.b64encode(speech).decode("ascii")}
+
+
+# ---- Phase 2 APIs ----
+
+class CategoryUpdate(BaseModel):
+    category: str
+
+
+@app.get("/api/categories")
+def categories():
+    """List all supported merchant categories."""
+    return {"categories": list_categories(), "current": state["category"]}
+
+
+@app.post("/api/category")
+def set_category(c: CategoryUpdate):
+    """Change the shop category — suggestion updates automatically."""
+    state["category"] = c.category
+    return {"category": c.category, "label": get_category_label(c.category)}
+
+
+@app.get("/api/festival")
+def festival():
+    """Check for upcoming festivals and year-over-year comparison."""
+    fest = festive_comparison(state["conn"], SHOP_ID, AS_OF)
+    upcoming = upcoming_festival(AS_OF)
+    return {"upcoming": upcoming, "comparison": fest}
+
+
+@app.get("/api/credit-score")
+def credit_score():
+    """AI-generated credit signal from transaction patterns."""
+    return compute_credit_signal(state["conn"], SHOP_ID, AS_OF)
